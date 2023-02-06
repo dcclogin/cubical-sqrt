@@ -22,9 +22,10 @@ notp = isoToPath (iso not not rem rem)
 
 
 
--- It's relatively easy to get the diagonal from a well-defined square
+-- It's relatively easier to get the diagonal from a well-defined square
 -- Square [left] [right] [bottom] [top]
-diag-from-sq : (p q : Bool ≡ Bool) → Square p q q p → Bool ≡ Bool
+diag-from-sq : (p q : Bool ≡ Bool)
+             → Square p q q p → Bool ≡ Bool
 diag-from-sq p q sq = λ i → sq i i
 
 -- example

@@ -33,7 +33,7 @@ i ⟦ id₁ ⟧₁    = id-path
 i ⟦ not₁ ⟧₁   = not-path
 i ⟦ !₁ c ⟧₁   = sym (i ⟦ c ⟧₁)
 i ⟦ p ⊙ q ⟧₁  = (i ⟦ p ⟧₁) ∙ (i ⟦ q ⟧₁)
-i ⟦ sqrt c ⟧₁ = {!!}
+i ⟦ sqrt c ⟧₁ = {!!} -- need a semantics model
 
 
 _⟦_⟧₂ : {A B : Π₂} (i : I) {p q : A ↔ B}
