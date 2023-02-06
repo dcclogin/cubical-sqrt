@@ -1,8 +1,9 @@
-{-# OPTIONS --cubical #-}
+{-# OPTIONS --cubical --allow-unsolved-metas #-}
 
-module sqrt-path where
+module SqrtPath where
 
 open import Cubical.Core.Everything
+open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.Function
 open import Cubical.Foundations.Univalence
 open import Cubical.Foundations.Equiv
@@ -22,23 +23,11 @@ private
     φ : I
 
 
-refl : {x : A} → x ≡ x
-refl {x = x} = λ i → x
-
-_∙_ : {x y z : A} → x ≡ y → y ≡ z → x ≡ z
-_∙_ {A = A} {x = x} p q j = hcomp (λ i → λ { (j = i0) → x ; (j = i1) → q i }) (p j)
-infixr 80 _∙_
 
 !_ : {x y : A} → x ≡ y → y ≡ x
 !_ p i = p (~ i)
 infixr 100 !_
 
-
-
-
-transport : ∀ {ℓ} {A B : Type ℓ} → A ≡ B → A → B
-transport p a = transp (λ i → p i) i0 a
--- f = (λ x → f x)
 
 transport-refl : ∀ {ℓ} {A : Type ℓ} (x : A) → transport refl x ≡ x
 transport-refl {A = A} x i = transp (λ _ → A) i x
@@ -117,6 +106,11 @@ pulle P i .snd
   = transp (λ k → isEquiv (transp (λ j → P (i ∨ (j ∧ k))) (i ∨ ~ k)))
       i (idIsEquiv (P i))
 
+pushe : ∀ {ℓ} {A B : Type ℓ} (p : A ≡ B) (i : I) → p i0 ≃ p i
+pushe P i .fst = transp (λ j → P (i ∧ j)) (~ i)
+pushe P i .snd = magic
+
+
 -- similar but for isomorphism ≅
 pulli : ∀ {ℓ} {A B : Type ℓ} (p : A ≡ B) (i : I) → p i ≅ p i1
 pulli P i = iso f g sec rtr
@@ -132,11 +126,6 @@ pulli P i = iso f g sec rtr
 
     rtr : ∀ x → g (f x) ≡ x
     rtr x = magic
-    
-
-pushe : ∀ {ℓ} {A B : Type ℓ} (p : A ≡ B) (i : I) → p i0 ≃ p i
-pushe P i .fst = transp (λ j → P (i ∧ j)) (~ i)
-pushe P i .snd = magic
 
 pushi : ∀ {ℓ} {A B : Type ℓ} (p : A ≡ B) (i : I) → p i0 ≅ p i
 pushi P i = magic
