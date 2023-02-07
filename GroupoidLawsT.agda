@@ -27,26 +27,29 @@ rUnitT {ℓ}{A}{B}{p} j i = hfill walls (inS (p i)) j
 
 -- need re-prove
 lUnitT-filler : ∀ {ℓ} {A B : Type ℓ} (p : A ≡ B) → I → I → I → Type ℓ
-lUnitT-filler {ℓ}{A}{B} p j k i =
-  hfill (λ j → λ { (i = i0) → A
-                 ; (i = i1) → p (~ k ∨ j)
-                 ; (k = i0) → p i
-                 })
-        (inS (p (~ k ∧ i)))
-        j
+lUnitT-filler {ℓ}{A}{B} p k j i = hfill walls (inS (p (~ j ∧ i))) k
+  where
+    walls : ∀ k → Partial (~ i ∨ i ∨ ~ j) (Type ℓ)
+    walls k (i = i0) = A
+    walls k (i = i1) = p (~ j ∨ k)
+    walls k (j = i0) = p i
+
 
 lUnitT : ∀ {ℓ} {A B : Type ℓ} {p : A ≡ B} → p ≡ refl ∙ p
 lUnitT {ℓ}{A}{B}{p} j i = lUnitT-filler p i1 j i
 
+
+
 -- need re-prove
 rCancelT-filler : ∀ {ℓ} {A B : Type ℓ} (p : A ≡ B) → (k j i : I) → Type ℓ
-rCancelT-filler {ℓ}{A}{B} p k j i =
-  hfill (λ k → λ { (i = i0) → A
-                 ; (i = i1) → p (~ k ∧ ~ j)
-                 ; (j = i1) → A
-                 })
-        (inS (p (i ∧ ~ j)))
-        k
+rCancelT-filler {ℓ}{A}{B} p k j i = hfill walls (inS (p (i ∧ ~ j))) k
+  where
+    walls : ∀ k → Partial (~ i ∨ i ∨ j) (Type ℓ)
+    walls k (i = i0) = A
+    walls k (i = i1) = p (~ k ∧ ~ j)
+    walls k (j = i1) = A
+
+
 
 rCancelT : ∀ {ℓ} {A B : Type ℓ} (p : A ≡ B) → p ∙ sym p ≡ refl
 rCancelT {ℓ}{A}{B} p j i = rCancelT-filler p i1 j i

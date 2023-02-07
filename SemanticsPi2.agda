@@ -27,6 +27,15 @@ not-path = isoToPath (iso not not rem rem)
 !notp=notp : sym not-path ≡ not-path
 !notp=notp = {!!}
 
+module _ where private
+  ptws : (b : Bool) → transport (sym not-path) b ≡ not b
+  ptws = λ _ → refl
+
+  _ : transport (sym not-path) ≡ not
+  _ = funExt ptws
+
+
+
 
 _⟦_⟧₁ : {A B : Π₂} (i : I) (c : A ↔ B) → ⟦ A ⟧ ≡ ⟦ B ⟧
 i ⟦ id₁ ⟧₁    = id-path
