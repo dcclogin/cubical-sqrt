@@ -13,7 +13,7 @@ open import Cubical.Foundations.Isomorphism renaming (Iso to _≅_)
 ⟦_⟧ : Π₂ → Type
 ⟦ 𝔹 ⟧ = Bool
 
-id-path : {T : Type} → T ≡ T
+id-path : ∀ {ℓ} {T : Type ℓ} → T ≡ T
 id-path = refl
 
 not-path : Bool ≡ Bool
@@ -23,7 +23,7 @@ not-path = isoToPath (iso not not rem rem)
     rem false = refl
     rem true  = refl
 
-
+-- funExt?
 !notp=notp : sym not-path ≡ not-path
 !notp=notp = {!!}
 
@@ -49,9 +49,9 @@ i ⟦ idl⊙l ⟧₂    = sym lUnitT           -- refl ∙ p ≡ p
 i ⟦ idr⊙l ⟧₂    = sym rUnitT           -- p ∙ refl ≡ p
 i ⟦ !r p ⟧₂     = rCancelT (i ⟦ p ⟧₁)  -- p ∙ (sym p) ≡ refl
 i ⟦ !l p ⟧₂     = lCancelT (i ⟦ p ⟧₁)  -- (sym p) ∙ p ≡ refl
-i ⟦ assoc⊙l ⟧₂  = {!!}
-i ⟦ assoc⊙r ⟧₂  = {!!}
-i ⟦ t₁ ▣ t₂ ⟧₂  = {!!}
+i ⟦ assoc⊙l ⟧₂  = assocT
+i ⟦ assoc⊙r ⟧₂  = sym assocT
+i ⟦ t₁ ▣ t₂ ⟧₂  = (i ⟦ t₁ ⟧₂) ◾ (i ⟦ t₂ ⟧₂) -- p ≡ q → r ≡ s → p ∙ r ≡ q ∙ s
 i ⟦ !id₁ ⟧₂     = refl
 i ⟦ !not₁ ⟧₂    = !notp=notp           -- (sym not-path) ≡ not-path
 i ⟦ !! ⟧₂       = refl
