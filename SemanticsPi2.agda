@@ -4,7 +4,7 @@ module SemanticsPi2 where
 
 open import SyntaxPi2
 open import GroupoidLawsT
-open import Data.Bool hiding  (_∨_ ; _∧_)
+open import Cubical.Data.Bool
 open import Cubical.Core.Everything
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.Isomorphism renaming (Iso to _≅_)
@@ -36,7 +36,7 @@ module _ where private
 
 
 
-
+-- _to_⟦_⟧₁ ?
 _⟦_⟧₁ : {A B : Π₂} (i : I) (c : A ↔ B) → ⟦ A ⟧ ≡ ⟦ B ⟧
 i ⟦ id₁ ⟧₁    = id-path
 i ⟦ not₁ ⟧₁   = not-path
@@ -54,6 +54,7 @@ i ⟦ sqd ⟧₂      = {!!}
 i ⟦ sqf ⟧₂      = {!!}
 i ⟦ sqi t ⟧₂    = {!!}
 i ⟦ sqc ⟧₂      = {!!}
+i ⟦ sq! ⟧₂      = {!!}
 i ⟦ idl⊙l ⟧₂    = sym lUnitT           -- refl ∙ p ≡ p
 i ⟦ idr⊙l ⟧₂    = sym rUnitT           -- p ∙ refl ≡ p
 i ⟦ !r p ⟧₂     = rCancelT (i ⟦ p ⟧₁)  -- p ∙ (sym p) ≡ refl
