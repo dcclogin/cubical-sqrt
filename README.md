@@ -8,9 +8,13 @@
 - [Cubical Agda: a cold Introduction](https://nextjournal.com/agdacubicold/intro) by Yinsen Zhang
 
 - [The red* family of proof assistants](https://redprl.org/)
-- [CSCI 8980 Higher-Dimensional Type Theory @ UMN](https://favonia.org/courses/hdtt2020/)
+- [CSCI 8980 Higher-Dimensional Type Theory](https://favonia.org/courses/hdtt2020/) @ UMN
 
 - [Computational Semantics of Cartesian Cubical Type Theory](https://www.cs.cmu.edu/~cangiuli/thesis/thesis.pdf) by [Carlo Angiuli](http://www.cs.cmu.edu/~cangiuli/)
 
 - [Dan Licata's Research](https://dlicata.wescreates.wesleyan.edu/pubs.html)
+
+### Cartesian Cubical Type Theory
+
+- [Syntax and Models of Cartesian Cubical Type Theory](https://github.com/dlicata335/cart-cube/blob/master/cart-cube.pdf)
 
