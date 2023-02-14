@@ -2,10 +2,9 @@
 
 module SyntaxPi2 where
 
-open import Data.Nat hiding (_^_)
+open import Cubical.Data.Bool
 open import Cubical.Core.Everything
 open import Cubical.Foundations.Prelude
-open import Cubical.Foundations.Isomorphism renaming (Iso to _≅_)
 
 
 
@@ -43,6 +42,7 @@ data _⇔_ : {A B : Π₂} (p q : A ↔ B) → Type where
   sqf   : {A : Π₂} {c : A ↔ A} → sqrt (c ⊙ c) ⇔ sqrt c ⊙ sqrt c
   sqi   : {A : Π₂} {p q : A ↔ A} → (p ⇔ q) → sqrt p ⇔ sqrt q
   sqc   : {A : Π₂} {c : A ↔ A} → sqrt c ⊙ c ⇔ c ⊙ sqrt c -- derivable from assoc and sqd
+  sq!   : {A : Π₂} {c : A ↔ A} → sqrt (!₁ c) ⇔ !₁ (sqrt c)
 
   idl⊙l : {A B : Π₂} {c : A ↔ B} → (id₁ ⊙ c) ⇔ c
   idr⊙l : {A B : Π₂} {c : A ↔ B} → (c ⊙ id₁) ⇔ c
