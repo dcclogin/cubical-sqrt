@@ -10,3 +10,5 @@
 - [The red* family of proof assistants](https://redprl.org/)
 - [CSCI 8980 Higher-Dimensional Type Theory @ UMN](https://favonia.org/courses/hdtt2020/)
 
+- [Computational Semantics of Cartesian Cubical Type Theory](https://www.cs.cmu.edu/~cangiuli/thesis/thesis.pdf) by by [Carlo Angiuli](http://www.cs.cmu.edu/~cangiuli/)
+
