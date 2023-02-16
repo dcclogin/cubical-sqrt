@@ -10,9 +10,9 @@
 ### More
 
 - (Paper) [Naive cubical type theory](https://arxiv.org/pdf/1911.05844.pdf)
-- (Blog) [Cubical Agda: a cold Introduction](https://nextjournal.com/agdacubicold/intro) by Yinsen Zhang
+- (Tutorial) [A tutorial on implementing De Morgan cubical type theory](https://arxiv.org/pdf/2210.08232.pdf) by Yinsen (Tesla) Zhang
+- (Tutorial) [Cubical Agda: a cold Introduction](https://nextjournal.com/agdacubicold/intro) by Yinsen (Tesla) Zhang
 - (Course) [CSCI 8980 Higher-Dimensional Type Theory](https://favonia.org/courses/hdtt2020/) @ UMN
-
 - (People) [Dan Licata's Research](https://dlicata.wescreates.wesleyan.edu/pubs.html)
 
 ### Cartesian Cubical Type Theory
