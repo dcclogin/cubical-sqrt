@@ -16,6 +16,8 @@
 - (Project) [1lab](https://1lab.dev/) by Amélia Liao et al.
 - (People) [Dan Licata's Research](https://dlicata.wescreates.wesleyan.edu/pubs.html)
 
+- (Catalog) [Maths - Cubical Type Theory (CTT)(https://www.euclideanspace.com/maths/discrete/types/hott/cubical/index.htm) @ EuclideanSpace
+
 ### Cartesian Cubical Type Theory
 
 - (Paper) [Syntax and Models of Cartesian Cubical Type Theory](https://github.com/dlicata335/cart-cube/blob/master/cart-cube.pdf)
