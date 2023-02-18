@@ -17,6 +17,7 @@
 - (People) [Dan Licata's Research](https://dlicata.wescreates.wesleyan.edu/pubs.html)
 
 - (Catalog) [Maths - Cubical Type Theory (CTT)](https://www.euclideanspace.com/maths/discrete/types/hott/cubical/index.htm) @ EuclideanSpace
+- (Thesis) [Higher Inductive Types and Internal Parametricity for Cubical Type Theory](https://kilthub.cmu.edu/articles/thesis/Higher_Inductive_Types_and_Internal_Parametricity_for_Cubical_Type_Theory/14555691) by [Evan Cavallo](https://staff.math.su.se/evan.cavallo/)
 
 ### Cartesian Cubical Type Theory
 
