@@ -16,6 +16,7 @@ private
     A B : Type ℓ
     X : A → Type ℓ
     a b : A
+    p : a ≡ b
 
 ```
 
@@ -77,7 +78,7 @@ An alternative (and simpler) way to define inverse:
 !'_ {ℓ}{A}{a}{b} p = λ i → p (~ i)
 ```
 
-Another alternative way (using coercion, described in Evan's Thesis Page 50):
+A third way (using coercion, described in Evan's Thesis Page 50):
 
 ```agda
 coe0→1 : ∀ {ℓ} (A : I → Type ℓ) → A i0 → A i1
@@ -88,7 +89,8 @@ coe0→1 A a = transp (λ i → A i) i0 a
 ```
 
 
-> Question : Are these ways equivalent? In what sense?
+> Question 1 : Are these ways equivalent? In what sense?
+> Question 2 : What's the relation between `coe0→1` and weak connections?
 
 
 
@@ -97,7 +99,7 @@ coe0→1 A a = transp (λ i → A i) i0 a
 
 ### Lemma 3.2.2 (Homogeneous composition)
 
-For every type `A` and every `a, b, c : A`, there is a function `(Path A a b)` → `(Path A b c)` → `(Path A a c)`.
+For every type `A` and every `a, b, c : A`, there is a function `(Path A a b) → (Path A b c) → (Path A a c)`.
 
 ```agda
 compPath : ∀ {ℓ} {A : Type ℓ} {a b c : A} → a ≡ b → b ≡ c → a ≡ c
@@ -133,6 +135,13 @@ compPath3 : ∀ {ℓ} {A : Type ℓ} {a b c : A} → a ≡ b → b ≡ c → a �
 compPath3 {ℓ}{A}{a}{b}{c} p q = p ∙∙ q ∙∙ refl
 ```
 
+`compPath1` is definitionally equal to `compPath`:
+
+```agda
+_ : ∀ {ℓ} {A : Type ℓ} {a b c : A} {p : a ≡ b} {q : b ≡ c} → compPath1 p q ≡ compPath p q
+_ = refl
+```
+
 
 
 
@@ -163,3 +172,101 @@ _[_∧_] {ℓ}{A}{a}{b} p i j = hcomp walls a
     walls k (j = i0) = a
     walls k (j = i1) = p [ i ∧* k ]
 ```
+
+
+### Lemma 4.1.2 (Join)
+
+For every type `A` and `a, b : A`, there is an operation `_[_∨_] : (Path A a b) → I → I → A`.
+
+```agda
+_[_∨*_] : ∀ {ℓ} {A : Type ℓ} {a b : A} → (p : a ≡ b) → I → I → A
+_[_∨*_] {ℓ}{A}{a}{b} p i j = hfill walls (inS (p i)) j
+  where
+    walls : ∀ (j : I) → Partial (~ i ∨ i) A
+    walls j (i = i0) = p j
+    walls j (i = i1) = b
+```
+
+```agda
+_[_∨_] : ∀ {ℓ} {A : Type ℓ} {a b : A} → (p : a ≡ b) → I → I → A
+_[_∨_] {ℓ}{A}{a}{b} p i j = hcomp walls a
+  where
+    walls : ∀ (k : I) → Partial (~ i ∨ ~ j) A
+    walls k (i = i0) = p [ k ∧* j ]
+    walls k (j = i0) = p [ k ∧* i ]
+```
+
+
+An alternative (and simpler) way to define connections (from 1lab.dev):
+
+```agda
+∧-conn : ∀ {ℓ} {A : Type ℓ} {a b : A} (p : a ≡ b) → PathP (λ i → a ≡ p i) refl p
+∧-conn {ℓ}{A}{a}{b} p i j = p (i ∧ j)
+
+∨-conn : ∀ {ℓ} {A : Type ℓ} {a b : A} (p : a ≡ b) → PathP (λ i → p i ≡ b) p refl
+∨-conn {ℓ}{A}{a}{b} p i j = p (i ∨ j)
+```
+
+Or we can use `Square` instead of "path of paths":
+
+```agda
+-- Square [left] [right] [bottom] [top]
+∧-conn' : ∀ {ℓ} {A : Type ℓ} {a b : A} (p : a ≡ b) → Square refl p refl p
+∧-conn' {ℓ}{A}{a}{b} p i j = p (i ∧ j)
+
+∨-conn' : ∀ {ℓ} {A : Type ℓ} {a b : A} (p : a ≡ b) → Square p refl p refl
+∨-conn' {ℓ}{A}{a}{b} p i j = p (i ∨ j)
+```
+
+
+They can also be viewed as constructed from the diagonal `(p : a ≡ b)`. It's definitionally equal to two egdes:
+
+```agda
+_ : ∀ {ℓ} {A : Type ℓ} {a b : A} {p : a ≡ b} → (λ i → ∧-conn p i i) ≡ p
+_ = refl
+
+_ : ∀ {ℓ} {A : Type ℓ} {a b : A} {p : a ≡ b} → (λ i → ∨-conn p i i) ≡ p
+_ = refl
+```
+
+But it's not definitionally equal in the first method:
+
+```text
+_ : ∀ {ℓ} {A : Type ℓ} {a b : A} {p : a ≡ b} → (λ i → p [ i ∧ i ]) ≡ p
+_ = {!!}
+```
+
+
+
+
+## The groupoid laws
+
+### Lemma 4.2.1
+
+For every `A` and every `a, b : A` we have a path `p ≡ p ∙ refl` where `p : a ≡ b`
+
+### Lemma 4.2.2
+
+For every `A` and every `a, b : A` we have a path `p ≡ refl ∙ p` where `p : a ≡ b`
+
+### Lemma 4.2.3
+
+For every `A` and every `a, b : A` we have a path `refl ≡ p ∙ (! p)` where `p : a ≡ b`
+
+### Lemma 4.2.4
+
+For every `A` and every `a, b : A` we have a path `refl ≡ (! p) ∙ p` where `p : a ≡ b`
+
+### Lemma 4.2.5
+
+For every `A` and every `a, b : A` we have a path `p ≡ (! (! p)` where `p : a ≡ b`
+
+### Lemma 4.2.6
+
+For every `A` and every `a, b, c, d : A`, we have a path `(p ∙ q) ∙ r ≡ p ∙ (q ∙ r)` where `p : a ≡ b` `q : b ≡ c` `r : c ≡ d`
+
+
+
+## The groupoid laws for paths between types
+
+See [GroupoidLawsT.agda](https://github.com/dcclogin/cubical-sqrt/blob/main/GroupoidLawsT.agda).
