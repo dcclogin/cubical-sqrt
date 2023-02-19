@@ -2,7 +2,7 @@
 
 module Diagonal0 where
 
-open import Data.Bool hiding  (_∨_ ; _∧_)
+open import Cubical.Data.Bool
 open import Cubical.Core.Everything
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.Equiv
@@ -36,6 +36,14 @@ sq0 i j = hfill (λ j → λ { (i = i0) → notp j
                          ; (i = i1) → idp{Bool} j })
                 (inS (idp{Bool} i)) j
 --}
+
+sq1 : ∀ {ℓ} → I → I → Type ℓ
+sq1 {ℓ} i j = hfill walls {!!} j
+  where
+    walls : ∀ j → Partial (~ i ∨ i) (Type ℓ)
+    walls j (i = i0) = {!!}
+    walls j (i = i1) = {!!}
+
 
 notp' : Bool ≡ Bool
 notp' i = Glue Bool walls
@@ -81,3 +89,11 @@ glue-hfill' : ∀ {ℓ} {φ}
             → I
             → Type ℓ
 glue-hfill' = {!!}
+
+
+module naive where
+  _ : ∀ {ℓ} {A : Type ℓ} (p : A ≡ A) → Σ[ q ∈ A ≡ A ] (q ∙ q ≡ p)
+  _ = {!!}
+
+  _ : ∀ {ℓ} {A : Type ℓ} (p : A ≡ A) → Σ[ q ∈ A ≡ A ] (Square q q q q)
+  _ = {!!}

@@ -2,7 +2,6 @@
 
 module SyntaxPi2 where
 
-open import Cubical.Data.Bool
 open import Cubical.Core.Everything
 open import Cubical.Foundations.Prelude
 
