@@ -90,6 +90,7 @@ coe0→1 A a = transp (λ i → A i) i0 a
 
 
 > Question 1 : Are these ways equivalent? In what sense?
+
 > Question 2 : What's the relation between `coe0→1` and weak connections?
 
 
@@ -238,35 +239,151 @@ _ = {!!}
 
 
 
-
 ## The groupoid laws
 
-### Lemma 4.2.1
+First, it's better to define fillers for `_∙∙_∙∙_` and `_∙_`:
 
-For every `A` and every `a, b : A` we have a path `p ≡ p ∙ refl` where `p : a ≡ b`
+```agda
+∙∙-filler : ∀ {ℓ} {A : Type ℓ} {a b c d : A} (p : a ≡ b) (q : b ≡ c) (r : c ≡ d)
+         → Square (sym p) r q (p ∙∙ q ∙∙ r)
+∙∙-filler {ℓ}{A}{a}{b}{c} p q r i j = hfill walls (inS (q i)) j
+  where
+    walls : ∀ (j : I) → Partial (~ i ∨ i) A
+    walls j (i = i0) = p (~ j)
+    walls j (i = i1) = r j
+```
 
-### Lemma 4.2.2
+```agda
+∙-filler : ∀ {ℓ} {A : Type ℓ} {a b c : A} (p : a ≡ b) (q : b ≡ c)
+         → Square refl q p (p ∙ q)
+∙-filler {ℓ}{A}{a}{b}{c} p q i j = hfill walls (inS (p i)) j
+  where
+    walls : ∀ (j : I) → Partial (~ i ∨ i) A
+    walls j (i = i0) = a
+    walls j (i = i1) = q j
+```
 
-For every `A` and every `a, b : A` we have a path `p ≡ refl ∙ p` where `p : a ≡ b`
+### Lemma 4.2.1 (Right unit)
 
-### Lemma 4.2.3
+For every `A` and every `a, b : A` we have a path `p ≡ p ∙ refl` where `p : a ≡ b`.
 
-For every `A` and every `a, b : A` we have a path `refl ≡ p ∙ (! p)` where `p : a ≡ b`
+```agda
+ru : ∀ {ℓ} {A : Type ℓ} {a b : A} {p : a ≡ b}
+   → p ≡ p ∙ refl
+ru {ℓ}{A}{a}{b}{p} j i = ∙-filler p refl i j
+```
 
-### Lemma 4.2.4
+### Lemma 4.2.2 (Left unit)
 
-For every `A` and every `a, b : A` we have a path `refl ≡ (! p) ∙ p` where `p : a ≡ b`
+For every `A` and every `a, b : A` we have a path `p ≡ refl ∙ p` where `p : a ≡ b`.
 
-### Lemma 4.2.5
+```agda
+lu : ∀ {ℓ} {A : Type ℓ} {a b : A} {p : a ≡ b}
+   → p ≡ refl ∙ p
+lu {ℓ}{A}{a}{b}{p} j i = hcomp walls (p (~ j ∧ i))
+  where
+    walls : ∀ (k : I) → Partial (~ i ∨ i ∨ ~ j) A
+    walls k (i = i0) = a
+    walls k (i = i1) = p (~ j ∨ k)
+    walls k (j = i0) = p i
+```
 
-For every `A` and every `a, b : A` we have a path `p ≡ (! (! p)` where `p : a ≡ b`
+### Lemma 4.2.3 (Right inverse w.r.t. concatenation)
 
-### Lemma 4.2.6
+For every `A` and every `a, b : A` we have a path `p ∙ (sym p) ≡ refl` where `p : a ≡ b`.
 
-For every `A` and every `a, b, c, d : A`, we have a path `(p ∙ q) ∙ r ≡ p ∙ (q ∙ r)` where `p : a ≡ b` `q : b ≡ c` `r : c ≡ d`
+```agda
+rc : ∀ {ℓ} {A : Type ℓ} {a b : A} {p : a ≡ b}
+   → p ∙ (sym p) ≡ refl
+rc {ℓ}{A}{a}{b}{p} j i = hcomp walls (p i)
+  where
+    walls : ∀ (k : I) → Partial (~ i ∨ i ∨ j) A
+    walls k (i = i0) = a
+    walls k (i = i1) = p (~ k)
+    walls k (j = i1) = p (i ∧ ~ k)
+```
+
+### Lemma 4.2.4 (Left inverse w.r.t. concatenation)
+
+For every `A` and every `a, b : A` we have a path `(sym p) ∙ p ≡ refl` where `p : a ≡ b`.
+
+```agda
+lc : ∀ {ℓ} {A : Type ℓ} {a b : A} {p : a ≡ b}
+   → (sym p) ∙ p ≡ refl
+lc {ℓ}{A}{a}{b}{p} j i = hcomp walls (p (~ i))
+  where
+    walls : ∀ (k : I) → Partial (~ i ∨ i ∨ j) A
+    walls k (i = i0) = b
+    walls k (i = i1) = p k
+    walls k (j = i1) = p (~ i ∨ k)
+```
+
+### Lemma 4.2.5 (Path inversion is involutive)
+
+For every `A` and every `a, b : A` we have a path `(sym (sym p) ≡ p` where `p : a ≡ b`.
+
+```agda
+inv : ∀ {ℓ} {A : Type ℓ} {a b : A} {p : a ≡ b}
+    → (sym (sym p)) ≡ p
+inv {ℓ}{A}{a}{b}{p} = refl
+```
+
+Using `hcomp`:
+
+```text
+-- has some error but I cannot figure out why
+inv : ∀ {ℓ} {A : Type ℓ} {a b : A} {p : a ≡ b}
+    → (sym (sym p)) ≡ p
+inv {ℓ}{A}{a}{b}{p} j i = hcomp walls (p (~ j))
+  where
+    walls : ∀ (k : I) → Partial (~ i ∨ i ∨ j) A
+    walls k (i = i0) = p (~ j ∧ ~ k)
+    walls k (i = i1) = p (~ j ∨ k)
+    walls k (j = i1) = p (i ∧ k)
+```
 
 
 
-## The groupoid laws for paths between types
+### Lemma 4.2.6 (Associativity)
+
+For every `A` and every `a, b, c, d : A`, we have a path `(p ∙ q) ∙ r ≡ p ∙ (q ∙ r)` where `p : a ≡ b` `q : b ≡ c` `r : c ≡ d`.
+
+```agda
+α-filler : ∀ {ℓ} {A : Type ℓ} {a b c d : A} (p : a ≡ b) (q : b ≡ c) (r : c ≡ d)
+         → Square refl (q ∙ r) p (p ∙ (q ∙ r))
+α-filler {ℓ}{A}{a}{b}{c}{d} p q r i j = hfill walls (inS (p i)) j
+  where
+    walls : ∀ j → Partial (~ i ∨ i) A
+    walls j (i = i0) = a
+    walls j (i = i1) = (q ∙ r) j
+```
+
+```agda
+β-filler : ∀ {ℓ} {A : Type ℓ} {a b c d : A} (p : a ≡ b) (q : b ≡ c) (r : c ≡ d)
+         → Square refl (q ∙ r) p ((p ∙ q) ∙ r)
+β-filler {ℓ}{A}{a}{b}{c}{d} p q r i j = hcomp walls (∙-filler p q i j)
+  where
+    walls : ∀ k → Partial (~ j ∨ j ∨ ~ i ∨ i) A
+    walls k (i = i0) = a
+    walls k (i = i1) = ∙-filler q r j k
+    walls k (j = i0) = p i
+    walls k (j = i1) = ∙-filler (p ∙ q) r i k
+
+```
+
+```agda
+assoc :  ∀ {ℓ} {A : Type ℓ} {a b c d : A} {p : a ≡ b} {q : b ≡ c} {r : c ≡ d}
+       → (p ∙ q) ∙ r ≡ p ∙ (q ∙ r)
+assoc {ℓ}{A}{a}{b}{c}{d}{p}{q}{r} j i = hcomp walls (p i)
+  where
+    walls : ∀ k → Partial (~ j ∨ j ∨ ~ i ∨ i) A
+    walls k (i = i0) = a
+    walls k (i = i1) = (q ∙ r) k
+    walls k (j = i0) = β-filler p q r i k
+    walls k (j = i1) = α-filler p q r i k
+```
+
+
+## The groupoid laws for **paths of types**
 
 See [GroupoidLawsT.agda](https://github.com/dcclogin/cubical-sqrt/blob/main/GroupoidLawsT.agda).
