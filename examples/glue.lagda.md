@@ -4,3 +4,10 @@
 module glue where
 
 ```
+
+
+
+### Derive `ua` from `Glue`
+
+
+### Generalized version
