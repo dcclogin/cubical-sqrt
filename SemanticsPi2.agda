@@ -5,9 +5,18 @@ module SemanticsPi2 where
 open import SyntaxPi2
 open import GroupoidLawsT
 open import Cubical.Data.Bool
+open import Cubical.Data.Prod
 open import Cubical.Core.Everything
 open import Cubical.Foundations.Prelude
 open import Cubical.Foundations.Isomorphism renaming (Iso to _≅_)
+
+
+-- TODO : postulate the merge operation on intervals ...
+-- multiple axioms without computational contents
+postulate
+  magic : ∀ {ℓ} {A : Type ℓ} → A
+  merge : ∀ {ℓ} {A : Type ℓ} (p : I → A) (q : I → A) → (p i1 ≡ q i0) → (p i0 ≡ q i1)
+  mergeT : ∀ {ℓ} (P : I → Type ℓ) (Q : I → Type ℓ) → (P i1 ≡ Q i0) → (P i0 ≡ Q i1)
 
 
 ⟦_⟧ : Π₂ → Type

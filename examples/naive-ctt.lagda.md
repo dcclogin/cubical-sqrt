@@ -1,10 +1,7 @@
-## Examples from Naive Cubical Type Theory
-
+# Examples from Naive Cubical Type Theory
 
 ```agda
 {-# OPTIONS --cubical #-}
-
-module hcomp-hfill where
 
 open import Cubical.Core.Everything
 open import Cubical.Foundations.Prelude
@@ -142,6 +139,8 @@ compPath3 {ℓ}{A}{a}{b}{c} p q = p ∙∙ q ∙∙ refl
 _ : ∀ {ℓ} {A : Type ℓ} {a b c : A} {p : a ≡ b} {q : b ≡ c} → compPath1 p q ≡ compPath p q
 _ = refl
 ```
+
+There are coherence conditions to make them "equivalent"...
 
 
 

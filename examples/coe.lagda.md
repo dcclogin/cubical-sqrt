@@ -1,12 +1,11 @@
-## Coercions, transport
+# Coercion
 
 
 ```agda
 {-# OPTIONS --cubical #-}
 
-module coe where
-
 open import Cubical.Core.Everything
+open import Cubical.Foundations.Prelude
 
 
 private
@@ -18,12 +17,12 @@ private
 ```
 
 
-```agda
+```text
 transport : A ≡ B → A → B
 transport P a = transp (λ i → P i) i0 a
 ```
 
-```agda
+```text
 subst : x ≡ y → C x → C y
 subst {C = C} p a = transp (λ i → C (p i)) i0 a
 ```
@@ -35,4 +34,10 @@ coe0→1 P a = transp P i0 a
 
 coe1→0 : (P : I → Type ℓ) → P i1 → P i0
 coe1→0 P b = transp (λ i → P (~ i)) i0 b
+```
+
+
+```agda
+cancel-coe : (P : I → Type ℓ) → ∀ a → (coe1→0 P (coe0→1 P a)) ≡ a
+cancel-coe P a = {!!}
 ```
