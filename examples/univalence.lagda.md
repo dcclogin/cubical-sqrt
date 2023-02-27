@@ -68,6 +68,12 @@ open _≅_
     walls : ∀ j → Partial (~ i ∨ i) _
     walls j (i = i0) = A
     walls j (i = i1) = q j
+
+-- Improved from _≃_
+≡-trans₁ : A ≡ B → B ≡ C → A ≡ C
+≡-trans₁ p q = ua (≃-trans (pathToEquiv p) (pathToEquiv q))
+
+-- coherence?
 ```
 
 
