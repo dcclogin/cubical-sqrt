@@ -57,3 +57,49 @@ Operations that can be defined in the language
 ```agda
 
 ```
+
+
+## Composition
+
+If `Γ, φ ⊢ u : A`, then `Γ ⊢ a : A[φ ↦ u]` means `Γ ⊢ a : A` **AND** `Γ, φ ⊢ a ≡ u : A`.
+
+Composition says extensibility of partial elements is preserved along paths. But What does it mean for a partial element to be "extensible"?
+
+
+```text
+Γ ⊢ φ : 𝔽
+Γ, (i : 𝕀) ⊢ A
+Γ, φ, (i : 𝕀) ⊢ u : A
+Γ ⊢ a₀ : A(i0) [φ ↦ u(i0)]
+---------------------------------------------
+Γ ⊢ compⁱ A [φ ↦ u] a₀ : A(i1) [φ ↦ u(i1)]
+```
+
+Here `u` is a *partial path*, while `u(i0)` and `u(i1)` are *partial elements*.
+
+It can be easily translated into Cubical Agda code:
+
+```agda
+postulate
+  comp' : ∀ {ℓ}
+          → (A : ∀ i → Type ℓ)
+          → (φ : I)
+          → (u : ∀ i → Partial φ (A i))
+          → A i0 [ φ ↦ u i0 ]
+          -------------------------
+          → A i1 [ φ ↦ u i1 ]
+```
+
+When `φ = 1𝔽`, u(i1) becomes a "total element" (no context restrictions):
+
+```text
+Γ ⊢ compⁱ A [1𝔽 ↦ u] a₀ = u(i1) : A(i1)
+```
+
+When `φ = 0𝔽`, composition corresponds to transport:
+
+```text
+Γ ⊢ transpⁱ A a = compⁱ A [] a : A(i1)
+```
+
+In Cubical Agda, `transp` is primitive. Can we define our own `transp` with `comp`?
