@@ -45,9 +45,7 @@ t,u,A,B := x | λx : A. t | t u | (x : A) → B       Π-types
      | φ ∨ ψ
 ```
 
-
-
-Operations that can be defined in the language
+Some operations can be defined with `comp` in the language:
 
 - `transp`
 - `fill`
@@ -55,12 +53,11 @@ Operations that can be defined in the language
 
 ## Composition
 
-If `Γ, φ ⊢ u : A`, then `Γ ⊢ a : A[φ ↦ u]` means `Γ ⊢ a : A` **AND** `Γ, φ ⊢ a ≡ u : A`.
+If `Γ, φ ⊢ u : A`, then `Γ ⊢ a : A[φ ↦ u]` means `Γ ⊢ a : A` **AND** `Γ, φ ⊢ a = u : A`.
+It can be read as "in the restricted context `φ`, `a` agrees with `u`".
+In other words, `a` is a evidence that `u` (defined on `φ`) is *extensible*.
 
-Composition says extensibility of partial elements is preserved along paths. But What does it mean for a partial element to be "extensible"?
-
-Does it means "going from restricted context to a non-restricted context", in order words "from faces to a full cube"?
-
+Composition says extensibility of partial elements is preserved along paths.
 
 ```text
 Γ ⊢ φ : 𝔽
@@ -71,7 +68,7 @@ Does it means "going from restricted context to a non-restricted context", in or
 Γ ⊢ compⁱ A [φ ↦ u] a₀ : A(i1) [φ ↦ u(i1)]
 ```
 
-Here `u` is a *partial path*, while `u(i0)` and `u(i1)` are *partial elements*.
+Here `u` is a **partial path**, while `u(i0)` and `u(i1)` are **partial elements**.
 
 It can be easily translated into Cubical Agda code:
 
@@ -86,16 +83,21 @@ postulate
           → A i1 [ φ ↦ u i1 ]
 ```
 
-When `φ = 1𝔽`, `u(i1)` becomes a "total element" (no context restrictions):
+### Two special cases
 
+1. When `φ = 1𝔽`, `u(i1)` becomes a "total element" (no context restrictions):
 ```text
 Γ ⊢ compⁱ A [1𝔽 ↦ u] a₀ = u(i1) : A(i1)
 ```
 
-When `φ = 0𝔽`, composition corresponds to transport:
-
+2. When `φ = 0𝔽`, composition corresponds to transport:
 ```text
 Γ ⊢ transpⁱ A a = compⁱ A [] a : A(i1)
 ```
+
+```agda
+
+```
+
 
 In Cubical Agda, `transp` is primitive. Can we define our own `transp` with `comp`?
