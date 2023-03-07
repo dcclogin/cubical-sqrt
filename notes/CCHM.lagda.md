@@ -53,17 +53,13 @@ Operations that can be defined in the language
 - `fill`
 
 
-
-```agda
-
-```
-
-
 ## Composition
 
 If `Γ, φ ⊢ u : A`, then `Γ ⊢ a : A[φ ↦ u]` means `Γ ⊢ a : A` **AND** `Γ, φ ⊢ a ≡ u : A`.
 
 Composition says extensibility of partial elements is preserved along paths. But What does it mean for a partial element to be "extensible"?
+
+Does it means "going from restricted context to a non-restricted context", in order words "from faces to a full cube"?
 
 
 ```text
@@ -90,7 +86,7 @@ postulate
           → A i1 [ φ ↦ u i1 ]
 ```
 
-When `φ = 1𝔽`, u(i1) becomes a "total element" (no context restrictions):
+When `φ = 1𝔽`, `u(i1)` becomes a "total element" (no context restrictions):
 
 ```text
 Γ ⊢ compⁱ A [1𝔽 ↦ u] a₀ = u(i1) : A(i1)
