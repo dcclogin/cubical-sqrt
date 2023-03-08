@@ -54,6 +54,7 @@ Some operations can be defined with `comp` in the language:
 ## Composition
 
 If `Γ, φ ⊢ u : A`, then `Γ ⊢ a : A[φ ↦ u]` means `Γ ⊢ a : A` **AND** `Γ, φ ⊢ a = u : A`.
+
 It can be read as "in the restricted context `φ`, `a` agrees with `u`".
 In other words, `a` is a evidence that `u` (defined on `φ`) is *extensible*.
 
@@ -75,12 +76,12 @@ It can be easily translated into Cubical Agda code:
 ```agda
 postulate
   comp' : ∀ {ℓ}
-          → (A : ∀ i → Type ℓ)
-          → (φ : I)
-          → (u : ∀ i → Partial φ (A i))
-          → A i0 [ φ ↦ u i0 ]
-          -------------------------
-          → A i1 [ φ ↦ u i1 ]
+        → (A : ∀ i → Type ℓ)
+        → (φ : I)
+        → (u : ∀ i → Partial φ (A i))
+        → A i0 [ φ ↦ u i0 ]
+        -------------------------
+        → A i1 [ φ ↦ u i1 ]
 ```
 
 ### Two special cases
@@ -95,9 +96,49 @@ postulate
 Γ ⊢ transpⁱ A a = compⁱ A [] a : A(i1)
 ```
 
-```agda
+In Cubical Agda, `transp` is primitive. Can we define our own `transp` with `comp`?
 
+
+### Kan filling operation
+
+
+```text
+Γ, i : 𝕀 ⊢ fillⁱ A [φ ↦ u] a₀ = compʲ A(i/i∧j) [φ ↦ u(i/i∧j), (i=0) ↦ a₀] a₀ : A
+```
+Let
+
+```text
+Γ, i : 𝕀 ⊢ v = fillⁱ A [φ ↦ u] a₀ : A
+```
+
+`v` satisfies:
+
+1. when `i=0`, it's just identity function.
+```text
+Γ ⊢ v(i0) = a₀ : A
+```
+
+2. when `i=1`, it's the "full composition".
+```text
+Γ ⊢ v(i1) = compⁱ A [φ ↦ u] a₀ : A(i1)
 ```
 
 
-In Cubical Agda, `transp` is primitive. Can we define our own `transp` with `comp`?
+```agda
+fill' : ∀ {ℓ}
+      → (A : ∀ i → Type ℓ)
+      → (φ : I)
+      → (u : ∀ i → Partial φ (A i))
+      → A i0 [ φ ↦ u i0 ]
+      -------------------------------
+      → (i : I) → A i
+fill' A φ u a₀ i = outS (comp' A* (φ ∨ ~ i) u* (inS (outS a₀)))
+  where
+    A* : _
+    A* = λ j → A (i ∧ j)
+
+    u* : ∀ j → Partial (φ ∨ ~ i) _
+    u* j (φ = i1) = u (i ∧ j) 1=1
+    u* j (i = i0) = outS a₀
+
+```
