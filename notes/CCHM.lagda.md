@@ -216,7 +216,7 @@ Inference rules (`unglue b` for `unglue [φ ↦ f] b`):
 ```
 
 
-Two special cases (when `φ = 1𝔽`, no restrictions):
+3 special cases (when `φ = 1𝔽`, no restrictions):
 
 ```text
 Γ ⊢ A
@@ -224,6 +224,17 @@ Two special cases (when `φ = 1𝔽`, no restrictions):
 Γ ⊢ f : Equiv T A
 -----------------------------
 Γ ⊢ Glue [1𝔽 ↦ (T, f)] A = T
+```
+
+```text
+Γ ⊢ b : Glue [1𝔽 ↦ (T, f)] A
+-----------------------------
+Γ ⊢ unglue b : A [1𝔽 ↦ f b]
+
+
+Γ ⊢ b : T = Glue [1𝔽 ↦ (T, f)] A
+---------------------------------
+Γ ⊢ unglue b = f b : A
 ```
 
 ```text
@@ -247,8 +258,17 @@ Example:
 Γ ⊢ Glue [(i=i0) ↦ (A, f), (i=i1) ↦ (B, id)] B
 ```
 
-Agda code.
+Agda code
 
+### Univalence
+
+We need a **universe**.
+
+```text
+t : (A B : U) → Path U A B → Equiv A B
+```
+
+For any term `t`, the map `t A B` is an equivalence.
 
 
 ## Examples
