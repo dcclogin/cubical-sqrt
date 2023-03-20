@@ -2,6 +2,7 @@
 {-# OPTIONS --cubical #-}
 
 open import Cubical.Core.Everything
+open import Cubical.Foundations.Prelude
 ```
 
 
@@ -24,6 +25,9 @@ t,u,A,B := x | λx : A. t | t u | (x : A) → B       Π-types
         | <i> t | t r | Path A t u                  Path types
         | [φ₁ t₁, φ₂ t₂, ..., φₙ tₙ]                Systems
         | compⁱ A [φ ↦ u] a₀                       Compositions
+        | Glue [φ ↦ (T,f)] A                       Glue types
+        | glue [φ ↦ t] u                           Glue term
+        | unglue [φ ↦ f] u                         unglue term
 ```
 
 ### Syntax of contexts
@@ -142,3 +146,144 @@ fill' A φ u a₀ i = outS (comp' A* (φ ∨ ~ i) u* (inS (outS a₀)))
     u* j (i = i0) = outS a₀
 
 ```
+
+
+
+### Contractible types
+
+
+Definition:
+
+```text
+isContr A = (x : A) × ((y : A) → Path A x y)
+```
+
+It can be interpreted as : there is an `x : A`, so that for every `y : A`, there is a path from `x` to `y`.
+
+
+### Equivalence
+
+Definition:
+
+```text
+isEquiv T A f = (y : A) → isContr ((x : T) × Path A y (f x))
+Equiv T A = (f : T → A) × isEquiv T A f
+```
+
+### Glueing
+
+
+Inference rules (`unglue b` for `unglue [φ ↦ f] b`):
+
+```text
+Γ ⊢ A
+Γ, φ ⊢ T
+Γ, φ ⊢ f : Equiv T A
+------------------------
+Γ ⊢ Glue [φ ↦ (T, f)] A
+```
+
+
+```text
+Γ ⊢ b : Glue [φ ↦ (T, f)] A
+----------------------------
+Γ ⊢ unglue b : A [φ ↦ f b]
+```
+
+
+```text
+Γ, φ ⊢ f : Equiv T A
+Γ, φ ⊢ t : T
+Γ ⊢ a : A [φ ↦ f t]
+------------------------------------------
+Γ ⊢ glue [φ ↦ t] a : Glue [φ ↦ (T, f)] A
+```
+
+
+```text
+Γ ⊢ b : Glue [φ ↦ (T, f)] A
+-------------------------------------------------------
+Γ ‌⊢ b = glue [φ ↦ b] (unglue b) : Glue [φ ↦ (T, f)] A
+```
+
+
+```text
+Γ, φ ⊢ f : Equiv T A
+Γ, φ ⊢ t : T
+Γ ⊢ a : A [φ ↦ f t]
+------------------------------------------
+Γ ⊢ unglue (glue [φ ↦ t] a) = a : A
+```
+
+
+Two special cases (when `φ = 1𝔽`, no restrictions):
+
+```text
+Γ ⊢ A
+Γ ⊢ T
+Γ ⊢ f : Equiv T A
+-----------------------------
+Γ ⊢ Glue [1𝔽 ↦ (T, f)] A = T
+```
+
+```text
+Γ ⊢ f : Equiv T A
+Γ ⊢ t : T
+Γ ⊢ a = f t : A
+-----------------------------
+Γ ⊢ glue [1𝔽 ↦ t] a = t : T
+```
+
+
+Example:
+
+```text
+Γ, ⊢ B
+Γ, (i=i0) ⊢ A
+Γ, (i=i1) ⊢ B
+Γ, (i=i0) ⊢ f : Equiv A B
+Γ, (i=i1) ⊢ id : Equiv B B
+------------------------------------------------
+Γ ⊢ Glue [(i=i0) ↦ (A, f), (i=i1) ↦ (B, id)] B
+```
+
+Agda code.
+
+
+
+## Examples
+
+
+Let's prove `≡-trans` with the postulated `comp'`:
+
+```agda
+≡-trans : ∀ {ℓ} {A : Type ℓ} {a b c : A} → a ≡ b → b ≡ c → a ≡ c
+≡-trans {ℓ}{A}{a}{b}{c} p q i = outS (comp' (λ _ → A) φ u (inS (p i)))
+  where
+    φ : I
+    φ = ~ i ∨ i
+
+    u : ∀ j → Partial φ _
+    u j (i = i0) = a
+    u j (i = i1) = q j
+```
+
+Let's prove `∙-filler` with `fill'`:
+
+```agda
+∙-filler : ∀ {ℓ} {A : Type ℓ} {a b c : A}
+         → (p : a ≡ b)
+         → (q : b ≡ c)
+         --------------
+         → Square refl q p (≡-trans p q)
+∙-filler {ℓ}{A}{a}{b}{c} p q i j = fill' (λ _ → A) φ u (inS (p i)) j
+  where
+    φ : I
+    φ = ~ i ∨ i
+
+    u : ∀ j → Partial φ _
+    u j (i = i0) = a
+    u j (i = i1) = q j
+```
+
+All good!
