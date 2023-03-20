@@ -12,3 +12,28 @@ open import Cubical.Foundations.CartesianKanOps
 exp := ...
     | coe r⇝r' A a
 ```
+
+
+## Scratch
+
+
+UIP:
+
+```text
+A ∈ Type ℓ
+a b ∈ A
+p q ∈ a ≡ b
+------------
+UIP₁ ∈ p ≡ q
+```
+
+2DTT:
+
+```text
+A ∈ Type ℓ
+a b ∈ A
+p q ∈ a ≡ b
+u v ∈ p ≡ q
+------------
+UIP₂ ∈ u ≡ v
+```
