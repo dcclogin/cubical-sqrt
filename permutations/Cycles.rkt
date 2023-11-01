@@ -1,18 +1,9 @@
 #lang racket
 
 ;; Cycle(Odd) -> List × List
-(define split-odd-cycle
-  (lambda (c)  ;; (assert (odd? c))
-    (letrec ([l (length c)]
-             [n (/ (add1 l) 2)]
-             [f (lambda (l i xs ys)
-                  (match l
-                    [`() `(,xs ,ys)]
-                    [`(,a . ,d)
-                     (if (< i n)
-                         (f d (add1 i) (append xs `(,a)) ys)
-                         (f d (add1 i) xs (append ys `(,a))))]))])
-      (f c 0 null null))))
+(define (split-odd-cycle c) ;; (assert (odd? c))
+  (let-values ([(xs ys) (split-at-right c (quotient (length c) 2))])
+    (list xs ys)))
 
 #;
 (split-odd-cycle '(1 2 3 4 5 6 7))
