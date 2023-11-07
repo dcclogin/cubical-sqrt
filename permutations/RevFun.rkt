@@ -1,5 +1,6 @@
 #lang racket
-(provide to-cycles)
+(require "FunLib.rkt")
+(provide get-domain to-cycles)
 
 (define (snoc elem ls)
   (match ls
@@ -52,28 +53,11 @@
 
 
 
-;; reversible function examples
-
-(define (f1 n)
-  (match n
-    [1 2] [2 3] [3 1]
-    [4 5] [5 4]
-    [6 7] [7 6]))
-
-(define (swap n)
-  (match n
-    [1 2] [2 1]))
-
-(define (id n) n)
-
-(define (ccx n)
-  (match n
-    [1 1] [2 2] [3 3] [4 4] [5 5] [6 6] [7 8] [8 7]))
-
 
 
 ;; tests
 
+#|
 (remvl '(1 2 3) '(1 2 3 4 5 6 7))
 (get-domain 7)
 (f1 1)
@@ -86,3 +70,4 @@
 (to-cycles swap (get-domain 2))
 (to-cycles id (get-domain 10))
 (to-cycles ccx (get-domain 8))
+|#

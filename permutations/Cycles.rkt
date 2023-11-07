@@ -1,4 +1,10 @@
 #lang racket
+(provide sqrt-odd-cycle
+         sqrt-even-cycle
+         sqrt0
+         sqrt1
+         sqrt2)
+
 
 ;; Cycle(Odd) -> List × List
 (define (split-odd-cycle c) ;; (assert (odd? c))
@@ -123,7 +129,7 @@
 
 
 
-
+#;
 (sqrt1 '((1 2 3) (4 5) (6) (7 8)))
 ;; => '((1 3 2) (6) (4 _ 5 _) (7 _ 8 _))
 
@@ -144,5 +150,7 @@
 
 ;;;;;;;;;;;;;;;; more examples ;;;;;;;;;;;;;;;;;;;
 
+#;
 (sqrt1 '((1) (2) (3) (4) (5) (6) (7 8)))
+#;
 (sqrt1 '((1 2 3 4 5) (a b c d e) (x y)))
