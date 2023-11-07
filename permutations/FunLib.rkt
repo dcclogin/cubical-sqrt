@@ -34,3 +34,9 @@
 
 (define (squaref f)
   (compose f f))
+
+
+(define swap^2 (squaref swap))
+(define swap^3 (compose swap swap^2))
+(define ccx^2 (squaref ccx))
+(define ccx^3 (compose ccx ccx^2))
