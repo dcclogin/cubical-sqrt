@@ -106,16 +106,16 @@
 (println "-- refined non-classical --")
 
 (check-equal?
- (sqrtc0 (to-cycles f1 (get-domain 7)))
+ (sqrtc2 (to-cycles f1 (get-domain 7)))
  '((1 3 2) (4 6 5 7)))
 
 (check-equal?
- (to-cycles (sqrtf0 f1 7)
+ (to-cycles (sqrtf2 f1 7)
             (get-domain 7))
  '((1 3 2) (4 6 5 7)))
 
 (check-equal?
- (to-cycles (squaref (sqrtf0 f1 7))
+ (to-cycles (squaref (sqrtf2 f1 7))
             (get-domain 7))
  '((1 2 3) (4 5) (6 7)))
 
@@ -130,3 +130,11 @@
 (check-match
  (sqrtc2 (to-cycles ccx (get-domain 8)))
  (list '(1) '(2) '(3) '(4) '(5) '(6) (list 7 _ 8 _)))
+
+
+
+(to-cycles (sqrtf2 swap^2 2) (get-domain 2))
+(to-cycles (sqrtf2 swap^3 2) (get-domain 2))
+
+(to-cycles (sqrtf2 ccx^2 8) (get-domain 8))
+(to-cycles (sqrtf2 ccx^3 8) (get-domain 8))
