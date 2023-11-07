@@ -1,9 +1,9 @@
 #lang racket
 (provide sqrt-odd-cycle
          sqrt-even-cycle
-         sqrt0
-         sqrt1
-         sqrt2)
+         sqrtc0
+         sqrtc1
+         sqrtc2)
 
 
 ;; Cycle(Odd) -> List × List
@@ -18,15 +18,14 @@
 
 
 ;; List × List -> Cycle
-(define suture-lists
-  (lambda (ll)
-    (match ll
-      [`((,x) ()) `(,x)]       ;; for odd
-      [`((,x) (,y)) `(,x ,y)]  ;; for even
-      [`((,x . ,xs^)
-         (,y . ,ys^))
-       (let ([c^ (suture-lists `(,xs^ ,ys^))])
-         `(,x ,y ,@c^))])))
+(define (suture-lists ll)
+  (match ll
+    [`((,x) ()) `(,x)]       ;; for odd
+    [`((,x) (,y)) `(,x ,y)]  ;; for even
+    [`((,x . ,xs^)
+       (,y . ,ys^))
+     (let ([c^ (suture-lists `(,xs^ ,ys^))])
+       `(,x ,y ,@c^))]))
 
 #;
 (suture-lists '((1 2 3 4) (5 6 7)))
@@ -38,9 +37,8 @@
 
 
 ;; Cycle(Odd) -> Cycle(Odd)
-(define sqrt-odd-cycle
-  (lambda (c)
-    (suture-lists (split-odd-cycle c))))
+(define (sqrt-odd-cycle c)
+  (suture-lists (split-odd-cycle c)))
 
 #;
 (sqrt-odd-cycle '(1 2 3 4 5 6 7))
@@ -51,27 +49,25 @@
 
 ;; Cycle(Even) -> Cycle(Even)
 ;; -- what's the cost of introducing a fresh pair-cycle?
-(define sqrt-even-cycle
-  (lambda (c)  ;; (assert (even? lc))
-    (letrec ([gencyc (lambda (n)
-                       (if (zero? n)
-                           null
-                           (cons (gensym) (gencyc (sub1 n)))))]
-             [c0 (gencyc (length c))])
-      (suture-lists `(,c ,c0)))))
+(define (sqrt-even-cycle c)
+  (letrec ([gencyc (lambda (n)
+                     (if (zero? n)
+                         null
+                         (cons (gensym) (gencyc (sub1 n)))))]
+           [c0 (gencyc (length c))])
+    (suture-lists `(,c ,c0))))
 
 
 (define sqrt-even-2-cycles suture-lists)
 
 ;; an even-length list whose elements' lengths are the same (even)
-(define sqrt-even-list-of-cycles
-  (lambda (lc)  ;; (assert (even? lc))
-    (match lc
-      [`() null]
-      [`(,c1 ,c2 . ,cs^)
-       (let ([c0 (sqrt-even-2-cycles `(,c1 ,c2))]
-             [cs (sqrt-even-list-of-cycles cs^)])
-         (cons c0 cs))])))
+(define (sqrt-even-list-of-cycles lc)
+  (match lc
+    [`() null]
+    [`(,c1 ,c2 . ,cs^)
+     (let ([c0 (sqrt-even-2-cycles `(,c1 ,c2))]
+           [cs (sqrt-even-list-of-cycles cs^)])
+       (cons c0 cs))]))
 
 #;
 (sqrt-even-cycle '(1 2 3 4))
@@ -92,12 +88,16 @@
 
 ;; PermC -> Maybe PermC
 ;; get one classical square root
-(define sqrt0
-  (lambda (p)
-    (letrec ([oc (filter (lambda (c) (odd? (length c))) p)]
-             [ec (filter (lambda (c) (even? (length c))) p)]
-             [sqrt-oc (map sqrt-odd-cycle oc)])
-      1)))
+;; !!! temporarily works only if all cycles in ec is of length 2 (i.e. swaps) !!!
+(define (sqrtc0 p)
+  (letrec ([oc (filter (lambda (c) (odd? (length c))) p)]
+           [ec (filter (lambda (c) (even? (length c))) p)]
+           [sqrt-oc (map sqrt-odd-cycle oc)])
+    (if (odd? (length ec))
+        (error 'sqrtc0 "no classical square roots for the permutation ~s" p)
+        (let ([sqrt-ec (sqrt-even-list-of-cycles ec)])
+          (append sqrt-oc sqrt-ec)))))
+
 
 ;; we need an algorithm
 ;; given a list of cycles with different lengths
@@ -107,25 +107,36 @@
 ;; output [((1 2) (3 4) (5 6)) ((a b c d) (w x y z)) ((■))]
 
 
+
 ;; PermC -> PermC
 ;; get one non-classical square root
 ;; -- generate cycle-pair for every single even cycle
 ;; -- easiest for implementation
-(define sqrt1
-  (lambda (p)
-    (letrec ([oc (filter (lambda (c) (odd? (length c))) p)]
-             [ec (filter (lambda (c) (even? (length c))) p)]
-             [sqrt-oc (map sqrt-odd-cycle oc)]
-             [sqrt-ec (map sqrt-even-cycle ec)])
-      (append sqrt-oc sqrt-ec))))
+(define (sqrtc1 p)
+  (letrec ([oc (filter (lambda (c) (odd? (length c))) p)]
+           [ec (filter (lambda (c) (even? (length c))) p)]
+           [sqrt-oc (map sqrt-odd-cycle oc)]
+           [sqrt-ec (map sqrt-even-cycle ec)])
+    (append sqrt-oc sqrt-ec)))
 
 
 ;; PermC -> PermC
 ;; get one non-classical square root
 ;; -- a more refined algorithm?
-(define sqrt2
-  (lambda (p)
-    1))
+;; !!! temporarily works only if all cycles in ec is of length 2 !!!
+(define (sqrtc2 p)
+  (letrec ([oc (filter (lambda (c) (odd? (length c))) p)]
+           [ec (filter (lambda (c) (even? (length c))) p)]
+           [sqrt-oc (map sqrt-odd-cycle oc)])
+    (if (odd? (length ec))
+        (match ec
+          [`(,a . ,d)
+           (let* ([a* (sqrt-even-cycle a)]
+                  [sqrt-d (sqrt-even-list-of-cycles d)]
+                  [sqrt-ec (cons a* sqrt-d)])
+             (append sqrt-oc sqrt-ec))])
+        (let ([sqrt-ec (sqrt-even-list-of-cycles ec)])
+          (append sqrt-oc sqrt-ec)))))
 
 
 

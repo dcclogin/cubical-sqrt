@@ -31,3 +31,6 @@
 (define (compose f g)
   (lambda (x)
     (f (g x))))
+
+(define (squaref f)
+  (compose f f))

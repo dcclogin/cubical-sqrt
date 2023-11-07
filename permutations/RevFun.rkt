@@ -1,6 +1,6 @@
 #lang racket
 (require "FunLib.rkt")
-(provide get-domain to-cycles)
+(provide get-domain to-cycles cycle-to-func to-func)
 
 (define (snoc elem ls)
   (match ls
@@ -8,7 +8,7 @@
     [`(,a . ,d)
      `(,a . ,(snoc elem d))]))
 
-
+;; remove all elements in xl from ls
 (define (remvl xl ls)
   (match ls
     ['() null]
@@ -24,7 +24,7 @@
       (snoc n (get-domain (sub1 n)))))
 
 
-;;
+
 (define (get-cycle f init-x)
   (let loop ([x init-x]
              [c null])
@@ -49,7 +49,21 @@
               (loop restl* cycles*))])))
 
 
+;; translate a single cycle to function
+(define (cycle-to-func c)
+  (lambda (x)
+    (match (memq x c)
+      [#f #f]
+      [`(,x) (car c)]
+      [`(,a . ,d) (car d)])))
 
+
+;; PermC -> ([n] -> [n])
+(define (to-func cycles)
+  (let ([fs (map cycle-to-func cycles)])
+    (lambda (x)
+      (let ([vs (map (lambda (f) (f x)) fs)])
+        (foldr (lambda (x y) (or x y)) #f vs)))))
 
 
 
@@ -70,4 +84,12 @@
 (to-cycles swap (get-domain 2))
 (to-cycles id (get-domain 10))
 (to-cycles ccx (get-domain 8))
+|#
+
+#|
+(memq 'x '(1 x 2 3))
+(memq 'x '(2 3 x))
+((cycle-to-func '(1 2 3)) 3)
+(foldr (lambda (x y) (or x y)) #f '(#f #f 3 #f))
+((to-func '((1 2 3) (4 5) (6 7))) 5)
 |#
