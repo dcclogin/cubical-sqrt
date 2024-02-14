@@ -1,0 +1,8 @@
+- Multiple actors interacting scenarios. Does square root lead to any benifit interms of speed and so on,
+ - Lustre (HDL)
+ - Lamport Clocks
+ - A Synchronous Functional Language with Integer Clocks -par Guatto, Andrien
+
+- Pattern matching instead of reversible combinators.
+ - Start with Theseus like language.
+ - Step index to keep track of computation and allow for square root.
