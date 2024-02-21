@@ -1,0 +1,29 @@
+- Functional Square Roots (the analytic way)
+ - Runge Phenomenon
+ - Iterative Roots
+
+- Interpreter for Theseus-like language
+ - based on type isomorphisms
+
+- Computing with Square root of Not
+
+- A class of Recursive Permutations which is 
+  Primitive Recursive complete
+
+- Permutation: typeless
+  Any familiar stuff: types
+  
+- Instead of encoding in a language
+  something more mathematical which
+  is easier to reason interms of sqr.
+  root.
+
+- Sqr. root <-> COP
+
+- Go back to motivations
+  With a few sqr. roots ... 
+
+- Permutation Algebra for constructing 
+  reversible circuits
+ - square root of bit permutations?
+ - identification of cycles ...
