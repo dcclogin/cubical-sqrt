@@ -1,5 +1,6 @@
 ## Example1: Nat2
 
+```
 Nat2 := Bool * Bool
 Nat3 := Bool * Bool * Bool
 Nat4 := Bool * Bool * Bool * Bool
@@ -37,11 +38,12 @@ add1 :: Nat3 <-> Nat3 :: sub1
 dropLastBit :: f:(A * Bool <-> A * Bool) -> (A <-> A)
 
 -- f == dropLastBit(sqrt2(f) . sqrt2(f))
-
+```
 
 
 ## Example2: Recursive Nat
 
+```
 data Nat where
     Z :: Nat
     S :: Nat -> Nat
@@ -92,3 +94,4 @@ sqrt2(unfoldNat^) :: Nat * (Nat + 1) * Bool <-> Nat * (Nat + 1) * Bool :: sqrt2(
 
 | (S n, inl n, 0)   <-> (S n, inl n, 1)
 | (S n, inl n, 1)   <-> (S n, inl n, 0)
+```
