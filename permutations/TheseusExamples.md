@@ -41,6 +41,10 @@ add1 :: Nat3 <-> Nat3 :: sub1
 
 -- we need a map to "drop" the last bit
 dropLastBit :: f:(A * Bool <-> A * Bool) -> (A <-> A)
+| a <-> drop (f a)
+
+drop :: (A * Bool) => A
+drop (a, b) = a
 
 -- f == dropLastBit(sqrt2(f) . sqrt2(f))
 ```
@@ -125,4 +129,23 @@ cbrt :: f:(A <-> A) -> (A * Three <-> A * Three)
 | (a, 0)   <-> (a, 1)
 | (a, 1)   <-> (f a, 2)
 | (f a, 2) <-> (f a, 0)
+```
+
+
+## Other Candidates
+
+```haskell
+sqrtIch :: f:(A <-> A) -> (A * A <-> A * A)
+| (a, f a) <-> (a, a)
+| (a, a)   <-> (f a, a)
+
+
+-- we need a map to "drop" the last bit
+dropIch :: f:(A * A <-> A * A) -> (A <-> A)
+| a <-> drop (f a)
+
+drop :: (A * A) => A
+drop (a1, a2) = a1
+
+-- f == dropIch(sqrtIch(f) . sqrtIch(f))
 ```
