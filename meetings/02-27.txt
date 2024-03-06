@@ -1,0 +1,5 @@
+- carleman[j,k] = (dk/dx^k (f(x)^j)) / k!
+
+- f . f = M[f] \times M[f]
+
+- rev. fun -> iso. -> matrix -> sqr. root that matrix

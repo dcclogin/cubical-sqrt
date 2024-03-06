@@ -7,7 +7,6 @@ module Sqrt where
 import Data.List
 import Numeric.AD
 import Numeric.LinearAlgebra
-import qualified GHC.TypeLits as iteration
 -- import qualified Numeric.AD.Mode.Reverse as R
 -- import qualified Numeric.AD.Mode.Reverse.Double as RD
 
@@ -23,4 +22,4 @@ carleman size = [[ aux j k | k <- [0..size-1]] | j <- [0..size-1]]
               else 0
 
 -- To find square root we can use Denman–Beavers iteration.
-sqrtm (fromLists (carleman 3))
+test1 = sqrtm (fromLists (carleman 3))
