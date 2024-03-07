@@ -1,0 +1,62 @@
+data Bool = TT | FF
+data Four = C1 | C2 | C3 | C4
+data Three = B1 | B2 | B3
+data Nat2 = Nat2 (Bool * Bool)
+data Nat3 = Nat3 (Bool * Bool * Bool)
+data Nat = Z | S Nat
+
+iso compose : f:(A = B) -> g:(B = C) -> (A = C)
+| a = g (f a)
+
+# same as [up]
+iso sqrt2 : f:(A = A) -> (A * Bool = A * Bool)
+| (a, FF) = (a, TT)
+| (a, TT) = (f a, FF)
+
+iso sqrt4 : f:(A = A) -> (A * Four = A * Four)
+| (a, C1) = (a, C3)
+| (a, C2) = (a, C4)
+| (a, C3) = (f a, C1)
+| (a, C4) = (f a, C2)
+
+iso cbrt3 : f:(A = A) -> (A * Three = A * Three)
+| (a, B1)   = (a, B2)
+| (a, B2)   = (f a, B3)
+| (f a, B3) = (f a, B1)
+
+iso add1_Nat2 : Bool * Bool = Bool * Bool
+| (FF, FF) = (FF, TT)
+| (TT, FF) = (TT, TT)
+| (FF, TT) = (TT, FF)
+| (TT, TT) = (FF, FF)
+
+iso unfoldNat : Nat = 1 + Nat
+| Z   = inL ()
+| S n = inR n
+
+iso unfoldNat_ : Nat * (1 + Nat) = Nat * (1 + Nat)
+| (Z, inL ())   = (Z, inL ())
+| (S n, inL ()) = (Z, inR n)
+| (Z, inR m)    = (S m, inL ())
+| (S n, inR m)  = (S m, inR n)
+
+
+eval sqrt2 ~f:add1_Nat2 (FF, TT, FF)  # expected: (FF, TT, TT)
+eval sqrt2 ~f:add1_Nat2 (FF, TT, TT)  # expected: (TT, FF, FF)
+eval sqrt2 ~f:add1_Nat2 (TT, TT, TT)  # expected: (FF, FF, FF)
+
+eval compose ~f:(sqrt2 ~f:add1_Nat2) ~g:(sqrt2 ~f:add1_Nat2) (FF, TT, FF)  # expected: (TT, FF, FF)
+eval compose ~f:(sqrt2 ~f:add1_Nat2) ~g:(sqrt2 ~f:add1_Nat2) (TT, TT, TT)  # expected: (FF, FF, TT)
+
+eval sqrt2 ~f:unfoldNat_ (Z, inR Z, FF)
+eval sqrt2 ~f:unfoldNat_ (Z, inR Z, TT)
+eval compose ~f:(sqrt2 ~f:unfoldNat_) ~g:(sqrt2 ~f:unfoldNat_) (Z, inR Z, FF)
+
+eval sqrt2 ~f:unfoldNat_ (S S Z, inR Z, FF)
+eval sqrt2 ~f:unfoldNat_ (S S Z, inR Z, TT)
+eval compose ~f:(sqrt2 ~f:unfoldNat_) ~g:(sqrt2 ~f:unfoldNat_) (S S Z, inR Z, FF)
+
+
+eval cbrt3 ~f:add1_Nat2 (FF, TT, B1)
+eval cbrt3 ~f:add1_Nat2 (FF, TT, B2)
+eval cbrt3 ~f:add1_Nat2 (TT, FF, B3)  # expected: (TT, FF, B1)

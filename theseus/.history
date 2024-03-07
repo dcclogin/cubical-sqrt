@@ -1,0 +1,21 @@
+iso not : Bool = Bool | True = False | False = True
+iso id : a = a | x = x
+data Bool = True | False
+iso not : Bool = Bool | T = F | F = T
+iso id : a = a | x = x
+eval sss (ss s)
+eval sss
+iso adjoint : f:(a = b) -> (b = a) | f x = x
+eval swapPlus (ss s)
+eval swapPlus
+eval
+eval swapPlus (inL x)
+eval swapPlus (inL T)
+data Bool = T | F
+iso swapPlus : a + b = b + a | inL a = inR a | inR b = inL b
+iso just : a = 1 + 1 | x = inR x | iter $ Start = inL () | iter $ Step n = iter $ n where iter : Inf
+data Maybe = Nothing | Just 0
+data Inf = Start | Step Inf
+data Inf
+#
+@
