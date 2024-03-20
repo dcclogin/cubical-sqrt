@@ -1,6 +1,11 @@
 
 Modified from [chessai](https://github.com/chessai/theseus).
 
+- fixed some pretty-prints
+- remove the REPL
+- [To be done] fix the module system
+- [To be done] rewriting rules of the language? 
+
 # Running Theseus Programs
 
 No REPL. We use the ghci REPL to run it:
@@ -18,10 +23,12 @@ GHCi, version X.X.X: https://www.haskell.org/ghc/  :? for help
 [7 of 8] Compiling Theseus.Eval     ( Theseus\Eval.hs, interpreted )
 [8 of 8] Compiling Theseus          ( Theseus.hs, interpreted )
 Ok, 8 modules loaded.
-ghci> run "../examples/sqrt.ths"
+ghci> run "sqrt.ths"
 Typechecking...
 Evaluating...
 [...]
 ghci> 
 ```
+
+The module system is not properly working currently. Require all `.ths` files to be under `src/` to work.
 
