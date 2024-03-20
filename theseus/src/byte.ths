@@ -1,4 +1,4 @@
-# use bool
+use bool
 
 iso up : f:(a = a) -> a * Bool = a * Bool
 | a, False = a, True

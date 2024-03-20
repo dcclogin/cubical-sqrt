@@ -32,7 +32,7 @@ lexer = makeTokenParser $
            , commentLine = "#"
            , identStart = letter <|> char '_'
            , identLetter = alphaNum <|> char '_'
-           , reservedNames = ["data", "inL", "inR", "eval", "where", "iso"]
+           , reservedNames = ["data", "inL", "inR", "eval", "where", "iso", "use"]
            , reservedOpNames = ["+","*",",", ";", "=", ":", "()"]
            , caseSensitive = True
            }

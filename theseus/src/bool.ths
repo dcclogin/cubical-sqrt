@@ -1,4 +1,4 @@
-# use partial
+use partial
 
 data Bool 
   = True 
@@ -31,7 +31,7 @@ eval toffoli True, (True, False)
 eval toffoli True, (False, True)
 eval toffoli True, (False, False)
 
-{--
+
 iso makeTrue : 1 = Bool
 | ()           = let $ just ()
 | let $ inL () = False
@@ -44,4 +44,3 @@ iso makeFalse : 1 = Bool
 # make constants
 eval makeTrue ()
 eval makeFalse ()
---}
