@@ -16,7 +16,7 @@ iso just : a = 1 + a
   | iter $ Step n = iter $ n
   where iter : Inf
 
-eval just ()
+# eval just ()
 
 # this will diverge on any input. This is the empty map.
 iso diverge : a = 0

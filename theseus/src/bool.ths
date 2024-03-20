@@ -26,10 +26,10 @@ iso cnot : Bool * Bool = Bool * Bool
 iso toffoli : Bool * (Bool * Bool) = Bool * (Bool * Bool)
 | x = if ~then:cnot ~else:id x
 
-eval toffoli True, (True, True)
-eval toffoli True, (True, False)
-eval toffoli True, (False, True)
-eval toffoli True, (False, False)
+# eval toffoli True, (True, True)
+# eval toffoli True, (True, False)
+# eval toffoli True, (False, True)
+# eval toffoli True, (False, False)
 
 
 iso makeTrue : 1 = Bool
@@ -42,5 +42,5 @@ iso makeFalse : 1 = Bool
 | () = not (makeTrue ())
 
 # make constants
-eval makeTrue ()
-eval makeFalse ()
+# eval makeTrue ()
+# eval makeFalse ()

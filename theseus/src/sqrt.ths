@@ -1,24 +1,174 @@
+use pi
+
+# this Bool definition will shadow the one in [bool.ths]
 data Bool = TT | FF
 data Four = C1 | C2 | C3 | C4
+data Eight = E1 | E2 | E3 | E4 | E5 | E6 | E7 | E8
 data Three = B1 | B2 | B3
 data Nat2 = Nat2 (Bool * Bool)
 data Nat3 = Nat3 (Bool * Bool * Bool)
 data Nat = Z | S Nat
 
+iso id1 : 1 = 1
+| () = ()
+
+iso not : 1 + 1 = 1 + 1
+| inL () = inR ()
+| inR () = inL ()
+
+# same as [fseq] in pi
 iso compose : f:(A = B) -> g:(B = C) -> (A = C)
 | a = g (f a)
 
-# same as [up]
-iso sqrt2 : f:(A = A) -> (A * Bool = A * Bool)
+iso fseq3 : f:(A = B) -> g:(B = C) -> h:(C = D) -> (A = D)
+| a = h (g (f a))
+
+iso fseq4 : f:(A = B) -> g:(B = C) -> h:(C = D) -> i:(D = E) -> (A = E)
+| a = i (h (g (f a)))
+
+iso embed_2 : f:(A = B) -> (A * Bool = B * Bool)
+| a, x = f a, x
+
+iso embed_8 : f:(A = B) -> (A * Eight = B * Eight)
+| a, x = f a, x
+
+iso next_2 : Bool = Bool
+| FF = TT | TT = FF
+
+iso next_8 : Eight = Eight
+| E1 = E2 | E2 = E3 | E3 = E4 | E4 = E5 | E5 = E6 | E6 = E7 | E7 = E8 | E8 = E1
+
+
+iso sqrt_2 : f:(A = A) -> (A * Bool = A * Bool)
 | (a, FF) = (a, TT)
 | (a, TT) = (f a, FF)
 
-
-iso sqrt4 : f:(A = A) -> (A * Four = A * Four)
+iso sqrt_4 : f:(A = A) -> (A * Four = A * Four)
 | (a, C1) = (a, C3)
 | (a, C2) = (a, C4)
 | (a, C3) = (f a, C1)
 | (a, C4) = (f a, C2)
+
+
+
+# sqrt_not == sqrt_2 ~f:not
+iso sqrt_not : (1 + 1) * Bool = (1 + 1) * Bool
+| inL () , FF = inL () , TT
+| inL () , TT = inR () , FF
+| inR () , FF = inR () , TT
+| inR () , TT = inL () , FF
+
+# unit with 8 phases (8th root of id1), see the paper [sqrtpi]
+iso w : 1 * Eight = 1 * Eight
+| () , x = () , next_8 x
+
+# see paper [sqrtpi]
+iso w_square : 1 * Eight = 1 * Eight
+| () , x = () , next_8 (next_8 x)
+
+# s_gate = fplus ~f:id1 ~g:w
+iso s_gate0 : 1 + (1 * Eight) = 1 + (1 * Eight)
+| inL () = inL (id1 ())
+| inR aa = inR (w_square aa)
+
+iso s_gate1 : (1 * Eight) + (1 * Eight) = (1 * Eight) + (1 * Eight)
+| inL aa = inL (embed_8 ~f:id1 aa)
+| inR aa = inR (w_square aa)
+
+iso s_gate2 : (1 + 1) * Eight = (1 + 1) * Eight
+| inL () , x = inL () , x
+| inR () , x = inR () , next_8 (next_8 x)
+
+{--
+the last seems to be the most desirable, but more [inlined]
+how to compose [sqrt_not] and [s_gate2]? they have different types but the same pattern [(1 + 1) * ?]
+attempt 1 : <[naive] mutural embedding> (wrong)
+--}
+
+
+# <eta-expansion> s_embeded_2 == embed_2 ~f:s_gate2
+iso s_embeded_2 : (1 + 1) * Eight * Bool = (1 + 1) * Eight * Bool
+| aa = embed_2 ~f:s_gate2 aa
+
+# <eta-expansion> v_embeded_8 == embed_8 ~f:sqrt_not
+iso v_embeded_8 : (1 + 1) * Bool * Eight = (1 + 1) * Bool * Eight
+| aa = embed_8 ~f:sqrt_not aa
+
+eval v_embeded_8 (inR (), TT, E3)
+eval s_embeded_2 (inR (), E3, TT)
+
+
+{--
+attempt 2 : <Bloch-Sphere assisted embedding> (?)
+--}
+
+
+{--
+iso s_embeded_2 : (1 + 1) * Eight * Bool = (1 + 1) * Eight * Bool
+| aaa = embed_2 ~f:s_gate2 aaa
+
+iso v_embeded_8 : (1 + 1) * Bool * Eight = (1 + 1) * Bool * Eight
+| a, TT, E1 = not a, FF, E1
+| a, TT, E3 = a, TT, E3
+| a, TT, E5 = not a, FF, E5
+| a, TT, E7 = a, TT, E7
+| a, TT, E2 = not a, TT, E4
+| a, TT, E4 = not a, TT, E2
+| a, TT, E6 = not a, TT, E8
+| a, TT, E8 = not a, TT, E6
+| ...
+--}
+
+
+
+
+
+{--
+isomorphic types : need to convert one type into the other?
+attempt : use [swapTimes] to <mediate> function composition...
+--}
+
+iso swap3 : Main * Cyc1 * Cyc2 = Main * Cyc2 * Cyc1
+| x, c1, c2 = x, c2, c1
+
+iso vs : (1 + 1) * Eight * Bool = (1 + 1) * Eight * Bool
+| aaa = fseq4 ~f:s_embeded_2 ~g:swap3 ~h:v_embeded_8 ~i:swap3 aaa
+
+iso svs : (1 + 1) * Eight * Bool = (1 + 1) * Eight * Bool
+| aaa = compose ~f:vs ~g:s_embeded_2 aaa
+
+iso sv : (1 + 1) * Bool * Eight = (1 + 1) * Bool * Eight
+| aaa = fseq4 ~f:v_embeded_8 ~g:swap3 ~h:s_embeded_2 ~i:swap3 aaa
+
+iso vsv : (1 + 1) * Bool * Eight = (1 + 1) * Bool * Eight
+| aaa = compose ~f:sv ~g:v_embeded_8 aaa
+
+{--
+eval swap3 (inR (), E3, TT)
+eval svs (inR (), E3, FF)
+eval vsv (inR (), FF, E3)
+--}
+
+{--
+now simulate the Hadmard gate following [sqrtpi]
+--}
+
+iso not_embeded_8 : (1 + 1) * Eight = (1 + 1) * Eight
+| a = embed_8 ~f:not a
+
+iso not_embeded : (1 + 1) * Eight * Bool = (1 + 1) * Eight * Bool
+| a = embed_2 ~f:not_embeded_8 a
+
+iso xsvsx : (1 + 1) * Eight * Bool = (1 + 1) * Eight * Bool
+| aaa = fseq3 ~f:not_embeded ~g:svs ~h:not_embeded aaa
+
+{--
+eval xsvsx (inR (), E7, FF)
+eval xsvsx (inR (), E7, TT)
+eval xsvsx (inL (), E3, FF)
+eval xsvsx (inL (), E7, TT)
+--}
+
 
 iso cbrt3 : f:(A = A) -> (A * Three = A * Three)
 | (a, B1)   = (a, B2)
@@ -41,23 +191,27 @@ iso unfoldNat_ : Nat * (1 + Nat) = Nat * (1 + Nat)
 | (Z, inR m)    = (S m, inL ())
 | (S n, inR m)  = (S m, inR n)
 
+{-
+eval sqrt_2 ~f:add1_Nat2 (FF, TT, FF)  # expected: (FF, TT, TT)
+eval sqrt_2 ~f:add1_Nat2 (FF, TT, TT)  # expected: (TT, FF, FF)
+eval sqrt_2 ~f:add1_Nat2 (TT, TT, TT)  # expected: (FF, FF, FF)
 
-eval sqrt2 ~f:add1_Nat2 (FF, TT, FF)  # expected: (FF, TT, TT)
-eval sqrt2 ~f:add1_Nat2 (FF, TT, TT)  # expected: (TT, FF, FF)
-eval sqrt2 ~f:add1_Nat2 (TT, TT, TT)  # expected: (FF, FF, FF)
+eval compose ~f:(sqrt_2 ~f:add1_Nat2) ~g:(sqrt_2 ~f:add1_Nat2) (FF, TT, FF)  # expected: (TT, FF, FF)
+eval compose ~f:(sqrt_2 ~f:add1_Nat2) ~g:(sqrt_2 ~f:add1_Nat2) (TT, TT, TT)  # expected: (FF, FF, TT)
 
-eval compose ~f:(sqrt2 ~f:add1_Nat2) ~g:(sqrt2 ~f:add1_Nat2) (FF, TT, FF)  # expected: (TT, FF, FF)
-eval compose ~f:(sqrt2 ~f:add1_Nat2) ~g:(sqrt2 ~f:add1_Nat2) (TT, TT, TT)  # expected: (FF, FF, TT)
+eval sqrt_2 ~f:unfoldNat_ (Z, inR Z, FF)
+eval sqrt_2 ~f:unfoldNat_ (Z, inR Z, TT)
+eval compose ~f:(sqrt_2 ~f:unfoldNat_) ~g:(sqrt_2 ~f:unfoldNat_) (Z, inR Z, FF)
 
-eval sqrt2 ~f:unfoldNat_ (Z, inR Z, FF)
-eval sqrt2 ~f:unfoldNat_ (Z, inR Z, TT)
-eval compose ~f:(sqrt2 ~f:unfoldNat_) ~g:(sqrt2 ~f:unfoldNat_) (Z, inR Z, FF)
-
-eval sqrt2 ~f:unfoldNat_ (S S Z, inR Z, FF)
-eval sqrt2 ~f:unfoldNat_ (S S Z, inR Z, TT)
-eval compose ~f:(sqrt2 ~f:unfoldNat_) ~g:(sqrt2 ~f:unfoldNat_) (S S Z, inR Z, FF)
+eval sqrt_2 ~f:unfoldNat_ (S S Z, inR Z, FF)
+eval sqrt_2 ~f:unfoldNat_ (S S Z, inR Z, TT)
+eval compose ~f:(sqrt_2 ~f:unfoldNat_) ~g:(sqrt_2 ~f:unfoldNat_) (S S Z, inR Z, FF)
 
 
 eval cbrt3 ~f:add1_Nat2 (FF, TT, B1)
 eval cbrt3 ~f:add1_Nat2 (FF, TT, B2)
 eval cbrt3 ~f:add1_Nat2 (TT, FF, B3)  # expected: (TT, FF, B1)
+-}
+
+
+## what kind of interesting Theseus programs we can write with sqrt_2 to get "quantum"?
