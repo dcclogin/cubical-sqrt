@@ -16,10 +16,6 @@ iso not : 1 + 1 = 1 + 1
 | inL () = inR ()
 | inR () = inL ()
 
-# same as [fseq] in pi
-iso compose : f:(A = B) -> g:(B = C) -> (A = C)
-| a = g (f a)
-
 iso fseq3 : f:(A = B) -> g:(B = C) -> h:(C = D) -> (A = D)
 | a = h (g (f a))
 
@@ -38,7 +34,6 @@ iso next_2 : Bool = Bool
 iso next_8 : Eight = Eight
 | E1 = E2 | E2 = E3 | E3 = E4 | E4 = E5 | E5 = E6 | E6 = E7 | E7 = E8 | E8 = E1
 
-
 iso sqrt_2 : f:(A = A) -> (A * Bool = A * Bool)
 | (a, FF) = (a, TT)
 | (a, TT) = (f a, FF)
@@ -49,54 +44,53 @@ iso sqrt_4 : f:(A = A) -> (A * Four = A * Four)
 | (a, C3) = (f a, C1)
 | (a, C4) = (f a, C2)
 
-
-
 # sqrt_not == sqrt_2 ~f:not
 iso sqrt_not : (1 + 1) * Bool = (1 + 1) * Bool
-| inL () , FF = inL () , TT
-| inL () , TT = inR () , FF
-| inR () , FF = inR () , TT
-| inR () , TT = inL () , FF
+| aa = sqrt_2 ~f:not aa
 
 # unit with 8 phases (8th root of id1), see the paper [sqrtpi]
-iso w : 1 * Eight = 1 * Eight
+iso ω : 1 * Eight = 1 * Eight
 | () , x = () , next_8 x
 
-# see paper [sqrtpi]
-iso w_square : 1 * Eight = 1 * Eight
+iso ω2 : 1 * Eight = 1 * Eight
 | () , x = () , next_8 (next_8 x)
 
-# s_gate = fplus ~f:id1 ~g:w
-iso s_gate0 : 1 + (1 * Eight) = 1 + (1 * Eight)
+# s_gate = fplus ~f:id1 ~g:ω
+iso s0 : 1 + (1 * Eight) = 1 + (1 * Eight)
 | inL () = inL (id1 ())
-| inR aa = inR (w_square aa)
+| inR aa = inR (ω2 aa)
 
-iso s_gate1 : (1 * Eight) + (1 * Eight) = (1 * Eight) + (1 * Eight)
+iso s1 : (1 * Eight) + (1 * Eight) = (1 * Eight) + (1 * Eight)
 | inL aa = inL (embed_8 ~f:id1 aa)
-| inR aa = inR (w_square aa)
+| inR aa = inR (ω2 aa)
 
-iso s_gate2 : (1 + 1) * Eight = (1 + 1) * Eight
-| inL () , x = inL () , x
-| inR () , x = inR () , next_8 (next_8 x)
+iso protoS : (1 + 1) * Eight = (1 + 1) * Eight
+| factor2 aa = factor2 (s1 aa)
+
+eval protoS (inL () , E3)
+eval protoS (inR () , E3)
 
 {--
-the last seems to be the most desirable, but more [inlined]
-how to compose [sqrt_not] and [s_gate2]? they have different types but the same pattern [(1 + 1) * ?]
-attempt 1 : <[naive] mutural embedding> (wrong)
+question : how to 'compose' [sqrt_not] and [protoS]? 
+they have different types but the same pattern [(1 + 1) * _]...
+attempt 1 : <naive mutural embedding>
 --}
 
 
-# <eta-expansion> s_embeded_2 == embed_2 ~f:s_gate2
-iso s_embeded_2 : (1 + 1) * Eight * Bool = (1 + 1) * Eight * Bool
-| aa = embed_2 ~f:s_gate2 aa
+# <eta-expansion> embededS == embed_2 ~f:protoS
+iso embededS : (1 + 1) * Eight * Bool = (1 + 1) * Eight * Bool
+| aa = embed_2 ~f:protoS aa
 
-# <eta-expansion> v_embeded_8 == embed_8 ~f:sqrt_not
-iso v_embeded_8 : (1 + 1) * Bool * Eight = (1 + 1) * Bool * Eight
+# <eta-expansion> embededSqrtNot == embed_8 ~f:sqrt_not
+iso embededSqrtNot : (1 + 1) * Bool * Eight = (1 + 1) * Bool * Eight
 | aa = embed_8 ~f:sqrt_not aa
 
-eval v_embeded_8 (inR (), TT, E3)
-eval s_embeded_2 (inR (), E3, TT)
+eval embededS (inL (), E3, TT)
+eval embededS (inR (), E3, TT)
 
+{--
+this is not desirable. need to let [embededS] depends on the [Bool] value.
+--}
 
 {--
 attempt 2 : <Bloch-Sphere assisted embedding> (?)
@@ -104,10 +98,10 @@ attempt 2 : <Bloch-Sphere assisted embedding> (?)
 
 
 {--
-iso s_embeded_2 : (1 + 1) * Eight * Bool = (1 + 1) * Eight * Bool
-| aaa = embed_2 ~f:s_gate2 aaa
+iso embededS : (1 + 1) * Eight * Bool = (1 + 1) * Eight * Bool
+| aaa = embed_2 ~f:protoS aaa
 
-iso v_embeded_8 : (1 + 1) * Bool * Eight = (1 + 1) * Bool * Eight
+iso embededSqrtNot : (1 + 1) * Bool * Eight = (1 + 1) * Bool * Eight
 | a, TT, E1 = not a, FF, E1
 | a, TT, E3 = a, TT, E3
 | a, TT, E5 = not a, FF, E5
@@ -132,16 +126,16 @@ iso swap3 : Main * Cyc1 * Cyc2 = Main * Cyc2 * Cyc1
 | x, c1, c2 = x, c2, c1
 
 iso vs : (1 + 1) * Eight * Bool = (1 + 1) * Eight * Bool
-| aaa = fseq4 ~f:s_embeded_2 ~g:swap3 ~h:v_embeded_8 ~i:swap3 aaa
+| aaa = fseq4 ~f:embededS ~g:swap3 ~h:embededSqrtNot ~i:swap3 aaa
 
 iso svs : (1 + 1) * Eight * Bool = (1 + 1) * Eight * Bool
-| aaa = compose ~f:vs ~g:s_embeded_2 aaa
+| aaa = fseq ~f:vs ~g:embededS aaa
 
 iso sv : (1 + 1) * Bool * Eight = (1 + 1) * Bool * Eight
-| aaa = fseq4 ~f:v_embeded_8 ~g:swap3 ~h:s_embeded_2 ~i:swap3 aaa
+| aaa = fseq4 ~f:embededSqrtNot ~g:swap3 ~h:embededS ~i:swap3 aaa
 
 iso vsv : (1 + 1) * Bool * Eight = (1 + 1) * Bool * Eight
-| aaa = compose ~f:sv ~g:v_embeded_8 aaa
+| aaa = fseq ~f:sv ~g:embededSqrtNot aaa
 
 {--
 eval swap3 (inR (), E3, TT)
@@ -196,16 +190,16 @@ eval sqrt_2 ~f:add1_Nat2 (FF, TT, FF)  # expected: (FF, TT, TT)
 eval sqrt_2 ~f:add1_Nat2 (FF, TT, TT)  # expected: (TT, FF, FF)
 eval sqrt_2 ~f:add1_Nat2 (TT, TT, TT)  # expected: (FF, FF, FF)
 
-eval compose ~f:(sqrt_2 ~f:add1_Nat2) ~g:(sqrt_2 ~f:add1_Nat2) (FF, TT, FF)  # expected: (TT, FF, FF)
-eval compose ~f:(sqrt_2 ~f:add1_Nat2) ~g:(sqrt_2 ~f:add1_Nat2) (TT, TT, TT)  # expected: (FF, FF, TT)
+eval fseq ~f:(sqrt_2 ~f:add1_Nat2) ~g:(sqrt_2 ~f:add1_Nat2) (FF, TT, FF)  # expected: (TT, FF, FF)
+eval fseq ~f:(sqrt_2 ~f:add1_Nat2) ~g:(sqrt_2 ~f:add1_Nat2) (TT, TT, TT)  # expected: (FF, FF, TT)
 
 eval sqrt_2 ~f:unfoldNat_ (Z, inR Z, FF)
 eval sqrt_2 ~f:unfoldNat_ (Z, inR Z, TT)
-eval compose ~f:(sqrt_2 ~f:unfoldNat_) ~g:(sqrt_2 ~f:unfoldNat_) (Z, inR Z, FF)
+eval fseq ~f:(sqrt_2 ~f:unfoldNat_) ~g:(sqrt_2 ~f:unfoldNat_) (Z, inR Z, FF)
 
 eval sqrt_2 ~f:unfoldNat_ (S S Z, inR Z, FF)
 eval sqrt_2 ~f:unfoldNat_ (S S Z, inR Z, TT)
-eval compose ~f:(sqrt_2 ~f:unfoldNat_) ~g:(sqrt_2 ~f:unfoldNat_) (S S Z, inR Z, FF)
+eval fseq ~f:(sqrt_2 ~f:unfoldNat_) ~g:(sqrt_2 ~f:unfoldNat_) (S S Z, inR Z, FF)
 
 
 eval cbrt3 ~f:add1_Nat2 (FF, TT, B1)

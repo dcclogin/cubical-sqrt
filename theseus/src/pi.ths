@@ -18,6 +18,13 @@ iso distrib : a * (b + c) = a * b + a * c
 iso factor : a * b + a * c = a * (b + c)
 | distrib x = x
 
+iso distrib2 : (b + c) * a = b * a + c * a
+| inL b, a = inL (b, a)
+| inR c, a = inR (c, a)
+
+iso factor2 : b * a + c * a = (b + c) * a
+| distrib2 x = x
+
 # Various Composition Forms
 
 # adjoints
