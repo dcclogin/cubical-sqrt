@@ -1,0 +1,82 @@
+use pi
+
+data Bool = B0 | B1
+data Cool = C0 | C1
+data Dool = D0 | D1
+
+iso fseq3 : f:(A = B) -> g:(B = C) -> h:(C = D) -> (A = D)
+| a = h (g (f a))
+
+iso fseq4 : f:(A = B) -> g:(B = C) -> h:(C = D) -> i:(D = E) -> (A = E)
+| a = i (h (g (f a)))
+
+iso not : 1 + 1 = 1 + 1
+| inL () = inR ()
+| inR () = inL ()
+
+iso notBool : Bool = Bool
+| B0 = B1 | B1 = B0
+
+iso sqrtX : Bool + Cool = Bool + Cool
+| inL B0 = inR C1
+| inL B1 = inR C0
+| inR C0 = inL B0
+| inR C1 = inL B1
+
+iso sqrtY : Bool + Dool = Bool + Dool
+| inL B0 = inR D1
+| inL B1 = inR D0
+| inR D0 = inL B0
+| inR D1 = inL B1
+
+iso sqrtZ : Cool + Dool = Cool + Dool
+| inL C0 = inR D1
+| inL C1 = inR D0
+| inR D0 = inL C0
+| inR D1 = inL C1
+
+iso embedPlus : f:(A = B) -> (A + C = B + C)
+| inL a = inL (f a)
+| inR c = inR c
+
+iso embeded_sqrtX : (Bool + Cool) + Dool = (Bool + Cool) + Dool
+| aaa = embedPlus ~f:sqrtX aaa
+
+iso embeded_sqrtY_ : (Bool + Dool) + Cool = (Bool + Dool) + Cool
+| aaa = embedPlus ~f:sqrtY aaa
+
+iso embeded_sqrtZ_ : (Cool + Dool) + Bool = (Cool + Dool) + Bool
+| aaa = embedPlus ~f:sqrtZ aaa
+
+iso switch1 : (B + D) + C = (B + C) + D
+| inL (inL b) = inL (inL b)
+| inL (inR d) = inR d
+| inR c = inL (inR c)
+
+iso switch2 : (C + D) + B = (B + C) + D
+| inR b = inL (inL b)
+| inL (inL c) = inL (inR c)
+| inL (inR d) = inR d
+
+iso embeded_sqrtY : (Bool + Cool) + Dool = (Bool + Cool) + Dool
+| switch1 aaa = switch1 (embeded_sqrtY_ aaa)
+
+iso embeded_sqrtZ : (Bool + Cool) + Dool = (Bool + Cool) + Dool
+| switch2 aaa = switch2 (embeded_sqrtZ_ aaa)
+
+
+eval embeded_sqrtY (inL (inL B0))
+eval embeded_sqrtY (inR D1)
+
+
+iso hadmard : (Bool + Cool) + Dool = (Bool + Cool) + Dool
+| aaa = fseq3 ~f:embeded_sqrtZ ~g:embeded_sqrtX ~h:embeded_sqrtZ aaa
+
+
+eval hadmard (inL (inL B0))
+eval hadmard (inR D0)
+eval hadmard (inL (inL B1))
+eval hadmard (inR D1)
+eval hadmard (inL (inR C0))
+eval hadmard (inL (inR C1))
+ 
