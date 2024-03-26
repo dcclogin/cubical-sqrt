@@ -3,7 +3,7 @@
 {-# LANGUAGE RankNTypes #-}
 
 
-module Sqrt where
+module Carleman where
 import Data.List
 import Numeric.AD
 import Numeric.LinearAlgebra

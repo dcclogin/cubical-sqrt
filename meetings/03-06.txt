@@ -1,0 +1,2 @@
+- Parameterized maps in Thesueus.
+- Reduction Semantics/ Calculus.
