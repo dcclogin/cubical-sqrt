@@ -49,3 +49,18 @@ $$ V\ket{1} = \frac{1-i}{2} \cdot \begin{bmatrix} 1 \\
 Therefore `Eight` values for the global phases are:
 
 $$ 1, \frac{1+i}{2}, i, \frac{-1+i}{2}, -1, \frac{-1-i}{2}, -i, \frac{1-i}{2} $$
+
+In Thesues, we defined `next_8` and `prev_8` to go back-and-forth:
+
+```haskell
+iso next_8 : Eight = Eight
+| E0 = E1 | E1 = E2 | E2 = E3 | E3 = E4 | E4 = E5 | E5 = E6 | E6 = E7 | E7 = E0
+
+iso prev_8 : Eight = Eight
+| next_8 a = a
+```
+
+## Problems
+
+1. Four relative phases at `inL (), FF, _, _` map to the same prototype quantum state.
+2. Need quite a lot translation maps to hold the equations from the symmetries of quantum states.
