@@ -47,4 +47,5 @@ $$ V\ket{1} = \frac{1-i}{2} \cdot \begin{bmatrix} 1 \\
                                   \end{bmatrix} $$
 
 Therefore `Eight` values for the global phases are:
+
 $$ 1, \frac{1+i}{2}, i, \frac{-1+i}{2}, -1, \frac{-1-i}{2}, -i, \frac{1-i}{2} $$
