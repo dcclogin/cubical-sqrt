@@ -8,8 +8,8 @@ where $` g `$ represents global phases, and $` r `$ represents relative (local) 
 
 In Theseus, the type `(1 + 1) * Bool * Four * Eight` represents a quantum state. The following is the translation from instances of the formula into the typed values:
 
-- $` g \cdot \begin{bmatrix} x \\ 
-                           y \cdot e^{\frac{i\pi \cdot r}{2}} 
-           \end{bmatrix} `$
+- $` g \cdot \begin{bmatrix} 1 \\ 
+                             0 \cdot e^{\frac{i\pi \cdot r}{2}} 
+             \end{bmatrix} `$ into `inL, FF, _, _`
 
 
