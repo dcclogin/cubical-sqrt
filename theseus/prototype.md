@@ -6,4 +6,10 @@ $$ g \cdot \begin{bmatrix} x \\
 
 where $` g `$ represents global phases, and $` r `$ represents relative (local) phases.
 
+In Theseus, the type `(1 + 1) * Bool * Four * Eight` represents a quantum state. The following is the translation from instances of the formula into the typed values:
+
+- $` g \cdot \begin{bmatrix} x \\ 
+                           y \cdot e^{\frac{i\pi \cdot r}{2}} 
+           \end{bmatrix} `$
+
 
