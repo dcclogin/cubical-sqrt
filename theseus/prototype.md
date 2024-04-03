@@ -6,7 +6,7 @@ $$ g \cdot \begin{bmatrix} x \\
 
 where $` g `$ represents global phases, and $` r `$ represents relative (local) phases.
 
-In Theseus, the type `(1 + 1) * Bool * Four * Eight` represents a quantum state. In this type, `(1 + 1) * Bool` are input/output type for `sqrt`; `Four` corresponds to the relative phase $` r `$; `Eight` corresponds to the global phase $` g `$. The following is the translation from instances of the formula into the typed values:
+In Theseus, the type `(1 + 1) * Bool * Four * Eight` represents a prototype quantum state. In this type, `(1 + 1) * Bool` are input/output type for `sqrt`; `Four` corresponds to the relative phase $` r `$; `Eight` corresponds to the global phase $` g `$. The following is the translation from instances of the formula into the typed values:
 
 - $` g \cdot \begin{bmatrix} 1 \\ 
                              0 \cdot e^{\frac{i\pi \cdot r}{2}} 
@@ -32,4 +32,10 @@ $` g \cdot \begin{bmatrix} 1 \\
            \end{bmatrix} `$ :
 
 `inL (), TT, C1, _` = `inR (), TT, C3, _`
+
+
+
+
+Take $` V = \begin{bmatrix} \frac{1+i}{2} && \frac{1-i}{2} \\ \frac{1-i}{2} && \frac{1+i}{2} \end{bmatrix} `$ for example:
+
 
