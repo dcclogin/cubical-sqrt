@@ -22,12 +22,14 @@ In Theseus, the type `(1 + 1) * Bool * Four * Eight` represents a quantum state.
              \end{bmatrix} `$ into `inR (), TT, _, _`
 
 
-Taking into consideration of symmetries, clearly there are some equations that should hold, e.g.:
+Taking into consideration of symmetries, clearly there are some equations that should hold, e.g.
 $` g \cdot \begin{bmatrix} 1 \\ 
                            -i \cdot e^{\frac{i\pi \cdot 1}{2}} 
            \end{bmatrix} `$
 shoud be equal to
 $` g \cdot \begin{bmatrix} 1 \\ 
                            i \cdot e^{\frac{i\pi \cdot 3}{2}} 
-           \end{bmatrix} `$
+           \end{bmatrix} `$ :
+
+`inL (), TT, C1, _` = `inR (), TT, C3, _`
 
