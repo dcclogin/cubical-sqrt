@@ -60,6 +60,28 @@ iso prev_8 : Eight = Eight
 | next_8 a = a
 ```
 
+## S-gate and V-gate (square root of X-gate)
+
+$` S = \begin{bmatrix} 1 && 0 \\ 0 && i \end{bmatrix} `$
+$` V = \begin{bmatrix} \frac{1+i}{2} && \frac{1-i}{2} \\ \frac{1-i}{2} && \frac{1+i}{2} \end{bmatrix} `$
+
+```haskell
+iso embededSS : (1 + 1) * Bool * Four * Eight = (1 + 1) * Bool * Four * Eight
+| inL (), FF, lp, gp = inL (), FF, lp, gp
+| inR (), FF, lp, gp = inR (), FF, next_4 lp, gp
+| inL (), TT, lp, gp = inL (), TT, next_4 lp, gp
+| inR (), TT, lp, gp = inR (), TT, next_4 lp, gp
+
+iso embededVV : (1 + 1) * Bool * Four * Eight = (1 + 1) * Bool * Four * Eight
+| inL (), FF, lp, gp = inL (), TT, prev_4 lp, next_8 gp
+| inR (), FF, lp, gp = inR (), TT, next_4 lp, prev_8 gp
+| ...
+```
+
+The S-gate is clear: the `next_4` only applies to those states with non-zero $` x `$.
+The V-gate is not very clear: seems not easy to define until all equations of symmetries are clear...
+
+
 ## Problems
 
 1. Four relative phases at `inL (), FF, _, _` map to the same prototype quantum state.
