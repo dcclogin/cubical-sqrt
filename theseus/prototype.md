@@ -38,4 +38,6 @@ $` g \cdot \begin{bmatrix} 1 \\
 
 Take $` V = \begin{bmatrix} \frac{1+i}{2} && \frac{1-i}{2} \\ \frac{1-i}{2} && \frac{1+i}{2} \end{bmatrix} `$ for example:
 
-
+$` V\ket{0} = \frac{1+i}{2} \cdot \begin{bmatrix} 1 \\ 
+                                                  -i 
+                                  \end{bmatrix} `$
