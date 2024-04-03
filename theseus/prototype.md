@@ -38,6 +38,13 @@ $` g \cdot \begin{bmatrix} 1 \\
 
 Take $` V = \begin{bmatrix} \frac{1+i}{2} && \frac{1-i}{2} \\ \frac{1-i}{2} && \frac{1+i}{2} \end{bmatrix} `$ for example:
 
-$` V\ket{0} = \frac{1+i}{2} \cdot \begin{bmatrix} 1 \\ 
+$$ V\ket{0} = \frac{1+i}{2} \cdot \begin{bmatrix} 1 \\ 
                                                   -i 
-                                  \end{bmatrix} `$
+                                  \end{bmatrix} $$
+
+$$ V\ket{1} = \frac{1-i}{2} \cdot \begin{bmatrix} 1 \\ 
+                                                  i 
+                                  \end{bmatrix} $$
+
+Therefore `Eight` values for the global phases are:
+$$ 1, \frac{1+i}{2}, i, \frac{-1+i}{2}, -1, \frac{-1-i}{2}, -i, \frac{1-i}{2} $$
