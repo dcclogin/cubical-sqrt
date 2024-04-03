@@ -60,6 +60,16 @@ iso prev_8 : Eight = Eight
 | next_8 a = a
 ```
 
+Similarly, for `Four` we have:
+
+```haskell
+iso next_4 : Four = Four
+| C0 = C1 | C1 = C2 | C2 = C3 | C3 = C0
+
+iso prev_4 : Four = Four
+| next_4 a = a
+```
+
 ## S-gate and V-gate (square root of X-gate)
 
 $` S = \begin{bmatrix} 1 && 0 \\ 0 && i \end{bmatrix} `$
@@ -78,8 +88,8 @@ iso embededVV : (1 + 1) * Bool * Four * Eight = (1 + 1) * Bool * Four * Eight
 | ...
 ```
 
-The S-gate is clear: the `next_4` only applies to those states with non-zero $` x `$.
-The V-gate is not very clear: seems not easy to define until all equations of symmetries are clear...
+- The S-gate is clear: the `next_4` only applies to those states with non-zero $` x `$.
+- The V-gate is not very clear: seems not easy to define until all equations of symmetries are clear...
 
 
 ## Problems
